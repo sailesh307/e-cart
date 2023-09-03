@@ -25,7 +25,7 @@ const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-// const shoppingCartRoutes = require('./routes/shoppingCartRoutes');
+const shoppingCartRoutes = require('./routes/shoppingCartRoutes');
 
 // Use the routes in your Express app
 app.get('/', (req, res) => {
@@ -35,7 +35,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
-// app.use('/api/cart', shoppingCartRoutes);
+app.use('/api/cart', shoppingCartRoutes);
 // ...other server setup code...
 
 // Start the server
