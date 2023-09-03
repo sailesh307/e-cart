@@ -6,14 +6,14 @@ const bcrypt = require('bcrypt');
 // Function to register a new user
 exports.register = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password , role} = req.body;
         // check if empty string
         if (!username || !email || !password) {
             return res.status(400).json({ message: 'Please fill out all fields' });
         }
 
         // Check if the user with the given email or username already exists
-        const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
@@ -27,6 +27,9 @@ exports.register = async (req, res) => {
             email,
             password: hashedPassword,
         });
+        if(role){
+            newUser.role = role;
+        }
 
         // Save the user to the database
         await newUser.save();
