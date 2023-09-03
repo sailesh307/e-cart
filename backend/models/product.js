@@ -26,6 +26,7 @@ const productSchema = new mongoose.Schema({
                 type: Number,
                 min: 1,
                 max: 5,
+                default: 4,
             },
             review: String, // Review text
             date: {
@@ -34,6 +35,10 @@ const productSchema = new mongoose.Schema({
             },
         },
     ],
+    date: {
+        type: Date,
+        default: Date.now,
+    },    
   // Additional fields as needed.
 });
 

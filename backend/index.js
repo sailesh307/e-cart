@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 });
 
 // Import route files
-// const productRoutes = require('./routes/productRoutes');
+const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const userRoutes = require('./routes/userRoutes');
 // const orderRoutes = require('./routes/orderRoutes');
@@ -31,7 +31,7 @@ const userRoutes = require('./routes/userRoutes');
 app.get('/', (req, res) => {
     res.send('This is e-cart api');
 });
-// app.use('/api/products', productRoutes);
+app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/users', userRoutes);
 // app.use('/api/orders', orderRoutes);
