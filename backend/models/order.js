@@ -24,6 +24,11 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    status: {
+        type: String,
+        enum: ['pending', 'paid', 'delivered', 'cancelled'],
+        default: 'pending',
+    },
     // Additional fields such as shipping information, status, etc.
 });
 
