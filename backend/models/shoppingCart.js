@@ -14,11 +14,17 @@ const cartItemSchema = new mongoose.Schema({
 
 const shoppingCartSchema = new mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: String,
         required: true,
     },
     items: [cartItemSchema],
 });
+
+shoppingCartSchema.virtual('userRef', {
+    ref: 'User', // reference to 'User' model
+    localField: 'user', // // Local field to match against 'User' model's field
+    foreignField: 'username', // Field in the 'User' model to match against
+    justOne: true, // Only return one user
+})
 
 module.exports = mongoose.model('ShoppingCart', shoppingCartSchema);
