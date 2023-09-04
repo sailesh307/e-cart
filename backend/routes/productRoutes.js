@@ -9,13 +9,13 @@ router.post('/', productController.createProducts);
 router.get('/', productController.getAllProducts);
 
 // Get a single product by ID
-router.get('id/:productId', productController.getProductById);
+router.get('/id/:productId', productController.getProductById);
 
 // Update a product by ID
-router.put('id/:productId', productController.updateProductById);
+router.put('/id/:productId', productController.updateProductById);
 
 // Delete a product by ID
-router.delete('id/:productId', productController.deleteProductById);
+router.delete('/id/:productId', productController.deleteProductById);
 
 // search products by name or category
 router.get('/search', productController.searchProducts);
