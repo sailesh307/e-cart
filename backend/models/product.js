@@ -15,6 +15,10 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    quantity: {
+        type: Number,
+        default: 1,
+    },
     imageUrls: [String], // Array of image URLs
     seller: {
         type: mongoose.Schema.Types.ObjectId,
