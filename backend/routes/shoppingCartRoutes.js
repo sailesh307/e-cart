@@ -1,20 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const cartController = require('../controllers/CartController');
+const CartController = require('../controllers/CartController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-// Create a new shopping cart
-router.post('/', cartController.createShoppingCart);
+// Create or update shopping cart of current user
+router.put('/', authMiddleware, CartController.createOrUpdateShoppingCart);
 
-// Get all shopping carts
-router.get('/', cartController.getAllShoppingCarts);
-
-// Get a single shopping cart by ID
-router.get('/:shoppingCartId', cartController.getShoppingCartById);
-
-// Update a shopping cart by ID
-router.put('/:shoppingCartId', cartController.updateShoppingCartById);
-
-// Delete a shopping cart by ID
-router.delete('/:shoppingCartId', cartController.deleteShoppingCartById);
+// Get shopping cart of current user 
+router.get('/', authMiddleware, CartController.getShoppingCart);
 
 module.exports = router;
