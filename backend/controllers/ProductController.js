@@ -89,3 +89,24 @@ exports.deleteProductById = async (req, res) => {
         res.status(500).json({ error: 'Failed to delete product' });
     }
 };
+
+// Search products by category name or product name
+exports.searchProducts = async (req, res) => {
+    try {
+
+        const { searchQuery } = req.query; // Get the search query from the request query parameters
+console.log('ddd' + searchQuery);
+        // Use Mongoose to search for products by category name or product name
+        const products = await Product.find({
+            $or: [
+                { category: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search for category name
+                { name: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search for product name
+            ],
+        });
+
+        res.json(products);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to search for products' });
+    }
+};
