@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -10,31 +15,7 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
-        required: true,
-    },
     imageUrls: [String], // Array of image URLs
-    ratings: [
-        {
-            user: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-            },
-            value: {
-                type: Number,
-                min: 1,
-                max: 5,
-                default: 4,
-            },
-            review: String, // Review text
-            date: {
-                type: Date,
-                default: Date.now,
-            },
-        },
-    ],
     seller: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
