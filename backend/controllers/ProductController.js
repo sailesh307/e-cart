@@ -93,16 +93,19 @@ exports.deleteProductById = async (req, res) => {
 // Search products by category name or product name
 exports.searchProducts = async (req, res) => {
     try {
+        const { query, limit = 10, page = 1 } = req.query; // Get the search query from the request query parameters
 
-        const { searchQuery } = req.query; // Get the search query from the request query parameters
-console.log('ddd' + searchQuery);
+        const skipCount = (page - 1) * limit; // Calculate the number of documents to skip based on page and limit
+
         // Use Mongoose to search for products by category name or product name
         const products = await Product.find({
             $or: [
-                { category: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search for category name
-                { name: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search for product name
+                { category: { $regex: query, $options: 'i' } }, // Case-insensitive search for category name
+                { name: { $regex: query, $options: 'i' } }, // Case-insensitive search for product name
             ],
-        });
+        })
+            .limit(parseInt(limit)) // Limit the number of results returned);
+            .skip(skipCount); // Skip the first n results (where n = (page - 1) * limit
 
         res.json(products);
     } catch (error) {
