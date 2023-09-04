@@ -62,9 +62,7 @@ console.log(passwordMatch);
         }
 
         // Generate a JWT token for the user
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-            expiresIn: '1h', // Token expiration time (adjust as needed)
-        });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
         res.json({ token });
     } catch (error) {
