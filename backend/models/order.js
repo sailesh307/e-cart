@@ -15,18 +15,26 @@ const orderItemSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: String,
         required: true,
     },
-    items: [orderItemSchema],
+    items: {
+        type: [orderItemSchema],
+        required: true,
+        validate: {
+            validator: function (items) {
+                return items && items.length > 0;
+            },
+            message: 'Order must have at least one item',
+        }
+    },
     total: {
         type: Number,
         required: true,
     },
     status: {
         type: String,
-        enum: ['pending', 'paid', 'delivered', 'cancelled'],
+        enum: ['pending', 'delivered', 'cancelled'],
         default: 'pending',
     },
     date: {
@@ -35,5 +43,12 @@ const orderSchema = new mongoose.Schema({
     }
     // Additional fields such as shipping information, status, etc.
 });
+
+orderSchema.virtual('userRef', {
+    ref: 'User',
+    localField: 'user',
+    foreignField: 'username',
+    justOne: true,
+})
 
 module.exports = mongoose.model('Order', orderSchema);
