@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: String,
         required: true,
     },
     order: {
@@ -19,17 +18,21 @@ const transactionSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now,
-    }
+    },
+    amount: {
+        type: Number,
+        required: true,
+    },
+
     // Additional fields such as shipping information, etc.
 });
 
-// custom getter function for the 'total' field
-transactionSchema.virtual('total').get(function () {
-    if (this.order && this.order.total) {
-        return this.order.total;
-    } else {
-        return 0; // Default to 0 if the order or total is not available
-    }
+// Virtual field to reference the 'User' model
+transactionSchema.virtual('userRef', {
+    ref: 'User', // reference to 'User' model
+    localField: 'user', // // Local field to match against 'User' model's field
+    foreignField: 'username', // Field in the 'User' model to match against
+    justOne: true, // Only return one user
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
