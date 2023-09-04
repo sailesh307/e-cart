@@ -1,14 +1,39 @@
 const Product = require('../models/Product');
 
+const User = require('../models/User');
+
 // Create a new product
-exports.createProduct = async (req, res) => {
+exports.createProducts = async (req, res) => {
     try {
-        const { name, description, price, category, imageUrls, seller } = req.body;
-        const product = new Product({ name, description, price, category, imageUrls , seller});
-        const savedProduct = await product.save();
-        res.status(201).json(savedProduct);
+        const { seller, products } = req.body;
+
+        // check if the seller exists
+        const existingSeller = await User.findOne({ username: seller });
+        if (!existingSeller) {
+            return res.status(400).json({ error: 'Seller not found' });
+        }
+
+        // an arrat to store saved products
+        const savedProducts = [];
+
+        // loop through each product in the array
+        for (const productData of products) {
+            const { category, name, description, price, quantity, imageUrls } = productData;
+
+            // create a new product
+            const product = new Product({ category, name, description, price, quantity, imageUrls, seller });
+
+            // save the product
+            const savedProduct = await product.save();
+
+            // push the saved product to the array
+            savedProducts.push(savedProduct);
+        }
+
+        res.status(201).json(savedProducts);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create product' });
+        console.log(error);
+        res.status(500).json({ error: 'Failed to create products' });
     }
 };
 
