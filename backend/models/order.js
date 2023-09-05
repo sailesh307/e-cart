@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 
-const orderItemSchema = new mongoose.Schema({
-    product: {
+const orderSchema = new mongoose.Schema({
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    product_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         required: true,
@@ -9,46 +14,32 @@ const orderItemSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         required: true,
-    },
-    // Additional fields such as price, subtotal, etc.
-});
-
-const orderSchema = new mongoose.Schema({
-    user: {
-        type: String,
-        required: true,
-    },
-    items: {
-        type: [orderItemSchema],
-        required: true,
-        validate: {
-            validator: function (items) {
-                return items && items.length > 0;
-            },
-            message: 'Order must have at least one item',
-        }
+        min: 1,
     },
     total: {
         type: Number,
         required: true,
     },
-    status: {
+    delivery_status: {
         type: String,
         enum: ['pending', 'delivered', 'cancelled'],
         default: 'pending',
     },
-    date: {
+    payment_status: {
+        type: String,
+        enum: ['pending', 'paid'],
+        default: 'pending',
+    },
+    order_date: {
         type: Date,
         default: Date.now,
-    }
-    // Additional fields such as shipping information, status, etc.
+    },
+    delivered_date: {
+        type: Date,
+    },
+    cancelled_date: {
+        type: Date,
+    },
 });
-
-orderSchema.virtual('userRef', {
-    ref: 'User',
-    localField: 'user',
-    foreignField: 'username',
-    justOne: true,
-})
 
 module.exports = mongoose.model('Order', orderSchema);
