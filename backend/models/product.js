@@ -14,13 +14,13 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    quantity: {
-        type: Number,
-        default: 1,
+    available : {
+        type: Boolean,
+        default: true,
     },
     imageUrls: [String], // Array of image URLs
     seller: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     date: {
@@ -35,13 +35,6 @@ productSchema.virtual('categoryRef', {
     localField: 'category', // // Local field to match against 'Category' model's field
     foreignField: 'name', // Field in the 'Category' model to match against
     justOne: true, // Only return one category
-});
-
-productSchema.virtual('sellerRef', {
-    ref: 'User', // reference to 'User' model
-    localField: 'seller', // // Local field to match against 'User' model's field
-    foreignField: 'username', // Field in the 'User' model to match against
-    justOne: true, // Only return one user
 });
 
 module.exports = mongoose.model('Product', productSchema);
