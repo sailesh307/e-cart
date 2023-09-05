@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // Schema for an individual order within a transaction
 const orderInTransactionSchema = new mongoose.Schema({
-    order_id: {
+    orderId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
         required: true,
@@ -11,12 +11,12 @@ const orderInTransactionSchema = new mongoose.Schema({
 
 // Schema for a transaction
 const transactionSchema = new mongoose.Schema({
-    user_id: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    order_ids: [orderInTransactionSchema], // Array of orders associated with this transaction
+    orderIds: [orderInTransactionSchema], // Array of orders associated with this transaction
     status: {
         type: String,
         enum: ['failed', 'success', 'pending'],

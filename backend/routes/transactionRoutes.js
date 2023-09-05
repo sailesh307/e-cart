@@ -1,16 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const transactionController = require('../controllers/TransactionController');
 
-// Create a new transaction
-router.post('/', transactionController.createTransaction);
+const TransactionController = require('../controllers/TransactionController');
 
-// Get all transactions
-router.get('/', transactionController.getAllTransactions);
+const authMiddleware = require('../middleware/authMiddleware');
+const paymentVerificationMiddleware = require('../middleware/paymentVerificationMiddleware');
+const adminMiddleware = require('../middleware/adminMiddleware');
+const customerMiddleware = require('../middleware/customerMiddleware');
 
-// Get a single transaction by ID
-router.get('/:transactionId', transactionController.getSingleTransaction);
+///////////////////// Customer /////////////////////
+// Create a new transaction of current user
+router.post('/', authMiddleware, customerMiddleware, paymentVerificationMiddleware, TransactionController.createTransactionOfCurrentUser);
+// Get all transactions of current user
+router.get('/', authMiddleware, customerMiddleware, TransactionController.getAllTransactionsOfCurrentUser);
+// Get a single transaction full detail by transaction ID of current user
+router.get('/id/:transactionId', authMiddleware, customerMiddleware, TransactionController.getSingleTransactionFullDetailsOfCurrentUser);
 
-// Get transation by username
-router.get('/user/:username', transactionController.getTransactionByUsername);
+
+///////////////////// Admin /////////////////////
+// Get all transactions full details
+router.get('/all', authMiddleware, adminMiddleware, TransactionController.getAllTransactionsFullDetails);
 module.exports = router;
