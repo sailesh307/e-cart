@@ -33,8 +33,11 @@ exports.getShoppingCart = async (req, res) => {
         if (!shoppingCart) {
             return res.status(404).json({ error: 'Shopping cart not found' });
         }
+        // Populate product details
+        await (await shoppingCart.populate('items.product')).$getPopulatedDocs();
         res.json(shoppingCart);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Failed to fetch shopping carts' });
     }
 };
