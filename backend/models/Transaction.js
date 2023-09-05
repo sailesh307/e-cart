@@ -1,15 +1,22 @@
 const mongoose = require('mongoose');
 
-const transactionSchema = new mongoose.Schema({
-    user: {
-        type: String,
-        required: true,
-    },
-    order: {
+// Schema for an individual order within a transaction
+const orderInTransactionSchema = new mongoose.Schema({
+    order_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
         required: true,
     },
+});
+
+// Schema for a transaction
+const transactionSchema = new mongoose.Schema({
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    order_ids: [orderInTransactionSchema], // Array of orders associated with this transaction
     status: {
         type: String,
         enum: ['failed', 'success', 'pending'],
@@ -23,16 +30,6 @@ const transactionSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-
-    // Additional fields such as shipping information, etc.
-});
-
-// Virtual field to reference the 'User' model
-transactionSchema.virtual('userRef', {
-    ref: 'User', // reference to 'User' model
-    localField: 'user', // // Local field to match against 'User' model's field
-    foreignField: 'username', // Field in the 'User' model to match against
-    justOne: true, // Only return one user
 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
