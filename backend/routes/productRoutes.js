@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/ProductController');
+const sellerMiddleware = require('../middleware/sellerMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Create a new product
-router.post('/', productController.createProducts);
+router.post('/', authMiddleware, sellerMiddleware, productController.createProduct);
 
 // Get all products
 router.get('/', productController.getAllProducts);

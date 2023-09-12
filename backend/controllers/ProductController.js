@@ -1,48 +1,53 @@
+const User = require('../models/User');
 const Product = require('../models/Product');
 
-const User = require('../models/User');
-
 // Create a new product
-exports.createProducts = async (req, res) => {
+exports.createProduct = async (req, res) => {
     try {
-        const { seller, products } = req.body;
+        const { userId } = req.user;
 
-        // check if the seller exists
-        const existingSeller = await User.findOne({ username: seller });
-        if (!existingSeller) {
-            return res.status(400).json({ error: 'Seller not found' });
-        }
+        // create a new product
+        const newProduct = new Product({ ...req.body, sellerId: userId });
 
-        // an arrat to store saved products
-        const savedProducts = [];
+        // save the product to the database
+        const savedProduct = await newProduct.save();
 
-        // loop through each product in the array
-        for (const productData of products) {
-            const { category, name, description, price, quantity, imageUrls } = productData;
-
-            // create a new product
-            const product = new Product({ category, name, description, price, quantity, imageUrls, seller });
-
-            // save the product
-            const savedProduct = await product.save();
-
-            // push the saved product to the array
-            savedProducts.push(savedProduct);
-        }
-
-        res.status(201).json(savedProducts);
+        res.status(201).json(savedProduct);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Failed to create products' });
+        res.status(500).json({ error: 'Failed to create product' });
     }
 };
 
-// Get all products
+// Get all products (paginated) (return on lowest price variant)
 exports.getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find();
-        res.json(products);
+        const {page = 1} = req.query;
+        const products = await Product.find()
+            .limit(10)
+            .skip((page - 1) * 10)
+            .sort({ createdAt: -1 });
+        // get the minimum price and data of the product
+        let results = [];
+        products.forEach((product) => {
+            let minPriceVariant = product.variant.variantData.reduce((prev, current) => {
+                return prev.price < current.price ? prev : current;
+            });
+            results.push({
+                _id: product._id,
+                name: product.name,
+                thumbnail: minPriceVariant.images[0],
+                price: minPriceVariant.price,
+                sellerId: product.sellerId,
+                extra: product.category !== 'clothing' ? minPriceVariant.color + ' | ' + minPriceVariant.size : null,
+                rating: product.rating,
+                ratingCount: product.ratingCount,
+                variantId: minPriceVariant._id,
+            });
+        });
+        res.json(results);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Failed to fetch products' });
     }
 };
@@ -96,18 +101,25 @@ exports.searchProducts = async (req, res) => {
         const { query, limit = 10, page = 1 } = req.query; // Get the search query from the request query parameters
 
         const skipCount = (page - 1) * limit; // Calculate the number of documents to skip based on page and limit
-
+        // if query is empty, return an all products
         // Use Mongoose to search for products by category name or product name
-        const products = await Product.find({
+        const products = await Product.find(query ? ({
             $or: [
                 { category: { $regex: query, $options: 'i' } }, // Case-insensitive search for category name
                 { name: { $regex: query, $options: 'i' } }, // Case-insensitive search for product name
             ],
-        })
+        }) : {})
             .limit(parseInt(limit)) // Limit the number of results returned);
             .skip(skipCount); // Skip the first n results (where n = (page - 1) * limit
+        // send only
+        const results = products.map((product) => ({
+            _id: product._id,
+            name: product.name,
+            thumbnail: product.thumbnail,
+            baseprice: product.baseprice,
+        }));
 
-        res.json(products);
+        res.json(results);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to search for products' });

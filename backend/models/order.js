@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    user_id: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    product_id: {
+    productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         required: true,
@@ -20,24 +20,24 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    delivery_status: {
+    deliveryStatus: {
         type: String,
         enum: ['pending', 'delivered', 'cancelled'],
         default: 'pending',
     },
-    payment_status: {
+    paymentStatus: {
         type: String,
         enum: ['pending', 'paid'],
         default: 'pending',
     },
-    order_date: {
+    orderDate: {
         type: Date,
         default: Date.now,
     },
-    delivered_date: {
+    deliveredDate: {
         type: Date,
     },
-    cancelled_date: {
+    cancelledDate: {
         type: Date,
     },
 });
