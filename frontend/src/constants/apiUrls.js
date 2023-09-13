@@ -6,7 +6,9 @@ export const API_URLS = {
     SEARCH: `${API_BASE_URL}/api/products/search`,
     PRODUCTS: `${API_BASE_URL}/api/products`,
     FETCH_A_PRODUCT: (productId) => `${API_BASE_URL}/api/products/id/${productId}`,
-
+    CART: `${API_BASE_URL}/api/cart`,
+    
+    
     
     FETCH_NOTES: `${API_BASE_URL}/api/notes/fetchallnotes`,
     ADD_NOTE: `${API_BASE_URL}/api/notes/addnote`,

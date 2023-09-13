@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import routeNames from '../constants/routeNames'
 import { useNavigate } from 'react-router-dom'
 import SelectionBox from './SelectionBox'
-import { addToCart } from '../state/actions/cartActions'
+import { addProductToCart } from '../state/actions/cartActions'
 import DisplayImages from './DisplayImages'
 import { formatRating, formatRatingCount } from '../utils/formating'
 
@@ -17,7 +17,7 @@ const DisplayProductDetails = ({ data }) => {
 
     //////////////// Data extraction ////////////////////
     /////////extract non changeable attributes //////////
-    const { _id, name, description, highlights, details, rating, ratingCount } = data ?? {};
+    const { _id, name, description, highlights, details, rating, ratingCount, commonImages } = data ?? {};
     const pid = _id;
     const { allColors, allSizes, variantData } = data?.variant ?? {};
 
@@ -31,7 +31,7 @@ const DisplayProductDetails = ({ data }) => {
 
 
     /////////////////////// changeable attributes /////////////////
-    const [currentImages, setCurrentImages] = useState([]);
+    const [currentImages, setCurrentImages] = useState(commonImages ?? []);
     const [currentPrice, setCurrentPrice] = useState('NA');
     ///////////////////////////////////////////////////////////////
 
@@ -80,12 +80,11 @@ const DisplayProductDetails = ({ data }) => {
         // set current images
         variantData.forEach((variant) => {
             if (variant.color === selectedColor && variant.size === selectedSize) {
-                setCurrentImages(variant.images ?? []);
+                setCurrentImages(variant.images.length === 0 ? commonImages : variant.images);
             }
         });
-        setIsInCart(products.some((product) => product.id === pid && product.variantId === selectedVariant));
-
-    }, [pid, products, selectedColor, selectedSize, selectedVariant, variantData]);
+        setIsInCart(products?.some((product) => product.productId === pid && product.variantId === selectedVariant));
+    }, [commonImages, pid, products, selectedColor, selectedSize, selectedVariant, variantData]);
 
 
     const handleColorChange = (color) => {
@@ -94,22 +93,32 @@ const DisplayProductDetails = ({ data }) => {
     const handleSizeChange = (size) => {
         setSelectedSize(size);
     }
-
+    
+// {
+//     "productId": "650147a6395fe358871d0394",
+//     "variantId": "650147a6395fe358871d0395",
+//     "name": "iPhone 14 Pro(Space Black | 128 GB)",
+//     "price": 100999,
+//     "color": "Space Black",
+//     "quantity": 1,
+//     "image": "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/l/p/-original-imaghxemc3wtcuhb.jpeg?q=70",
+//     "_id": "650189ba29c4466bcd0dd368"
+// }
 
     const handleAddToCart = (e) => {
         e.preventDefault();
         const fullName = `${name} (${selectedColor} | ${selectedSize})`;
         // remove 
         const item = {
-            id: pid,
+            productId: pid,
             variantId: selectedVariant,
             name: fullName,
             price: currentPrice,
+            color: selectedColor,
             quantity: 1,
-            imageSrc: currentImages[0],
-            imageAlt: name,
+            image: currentImages[0],
         }
-        dispatch(addToCart(item));
+        dispatch(addProductToCart(item));
     };
     return (
         <div className="bg-white flex flex-col lg:flex-row">

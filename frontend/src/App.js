@@ -9,22 +9,30 @@ import ProducOverview from "./components/ProductOverview";
 import ProductPage from "./components/ProductPage";
 import Search from "./components/Search";
 import PaymentPage from "./components/PaymentPage";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loading from "./components/Loading";
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect } from "react";
+import { fetchCart } from "./state/actions/cartActions";
 
 
 
 function App() {
   const loading = useSelector((state) => state.loading);
-  // const { error } = isError;
+  const dispatch = useDispatch();
+
+  // initialize the cart on app load
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
+
 
   return (
     <>
-    {/* // <Testing /> */}
+      {/* // <Testing /> */}
       <BrowserRouter>
         <NavBar />
-        
+
         {loading && <Loading />}
         <main className="">
           <Routes>
