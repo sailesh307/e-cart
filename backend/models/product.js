@@ -4,10 +4,7 @@ const variantSchema = new mongoose.Schema({
     color: String,
     size: String,
     price: Number,
-    images: [{
-        type: String,
-        required: true,
-    }],
+    images: [String],
 });
 
 const productSchema = new mongoose.Schema({
@@ -29,7 +26,14 @@ const productSchema = new mongoose.Schema({
     brand: String,
     details: [String],
     highlights: [String],
-
+    commonImages: {
+        type: [String],
+        required: true,
+        validate: {
+            validator: (images) => images.length > 0,
+            message: 'Product must have at least one image',
+        }
+    },
     variant: {
         allColors: [String],
         allSizes: [String],

@@ -33,10 +33,11 @@ exports.getAllProducts = async (req, res) => {
             let minPriceVariant = product.variant.variantData.reduce((prev, current) => {
                 return prev.price < current.price ? prev : current;
             });
+            const thumbnail = minPriceVariant.images.length > 0 ? minPriceVariant.images[0] : product.commonImages[0];
             results.push({
                 _id: product._id,
                 name: product.name,
-                thumbnail: minPriceVariant.images[0],
+                thumbnail: thumbnail,
                 price: minPriceVariant.price,
                 sellerId: product.sellerId,
                 extra: product.category !== 'clothing' ? minPriceVariant.color + ' | ' + minPriceVariant.size : null,
