@@ -1,0 +1,61 @@
+{
+    "seller": "Admin",
+    "products": [
+        {
+            "category": "smartphone",
+            "name": "Apple iPhone 14 Pro",
+            "description": "NA",
+            "brand": "Apple",
+            "model": "iPhone 14 Pro",
+            "highlights": [
+                "15.49 cm (6.1 inch) Super Retina XDR Display",
+                "48MP + 12MP + 12MP | 12MP Front Camera",
+                "A16 Bionic Chip, 6 Core Processor Processor"
+            ],
+            "attributes": {
+                "colors": [
+                    "Space Black",
+                    "Gold"
+                ],
+                "storage": [
+                    "256 GB",
+                    "1 TB",
+                    "128 GB"
+                ],
+                "ram": []
+            },
+            "baseprice": 119999,
+            "prices": {
+                "Space Black, 256 GB": 129999,
+                "Space Black, 1 TB": 169999,
+                "Gold, 1 TB": 1690,
+                "Gold, 128 GB": 119999
+            },
+            "stocks": {
+                "Space Black, 256 GB": 50,
+                "Space Black, 1 TB": 30,
+                "Gold, 1 TB": 10,
+                "Gold, 128 GB": 20
+            },
+            "thumbnail": "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/l/p/-original-imaghxemc3wtcuhb.jpeg?q=70",
+            "images": {
+                "Space Black, 256 GB": [
+                    "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/l/p/-original-imaghxemc3wtcuhb.jpeg?q=70",
+                    "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/r/0/6/-original-imaghxemsfczqrvb.jpeg?q=70"
+                ],
+                "Space Black, 1 TB": [
+                    "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/l/p/-original-imaghxemc3wtcuhb.jpeg?q=70",
+                    "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/r/0/6/-original-imaghxemsfczqrvb.jpeg?q=70"
+                ],
+                "Gold, 1 TB": [
+                    "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/i/h/c/-original-imaghxemmqyahnuj.jpeg?q=70",
+                    "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/9/s/l/-original-imaghxemhkf65etg.jpeg?q=70"
+                ],
+                "Gold, 128 GB": [
+                    "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/i/h/c/-original-imaghxemmqyahnuj.jpeg?q=70",
+                    "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/9/s/l/-original-imaghxemhkf65etg.jpeg?q=70"
+                ]
+            }
+        }
+    ]
+}

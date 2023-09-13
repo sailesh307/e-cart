@@ -3,19 +3,42 @@ const Order = require('../models/Order');
 // Create a new order
 exports.createOrder = async (req, res) => {
     try {
-        const { user, items, total, status } = req.body;
-        const order = new Order({ user, items, total, status });
+        const userId = req.user.userId; // from authMiddleware
+        const { productId, quantity, total } = req.body;
+        // check for payment status
+        const order = new Order({ userId, productId, quantity, total });
         const savedOrder = await order.save();
         res.status(201).json(savedOrder);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Failed to create order' });
     }
 };
 
-// Get all orders
+// Get all orders of current user on basis of query
 exports.getAllOrders = async (req, res) => {
     try {
-        const orders = await Order.find();
+        const userId = req.user.userId; // from authMiddleware
+        let query = {};
+
+        // check on basis of delivery status
+        if (req.query.deliveryStatus) {
+            query.deliveryStatus = req.query.deliveryStatus;
+        }
+        // check on basis of payment status
+        if (req.query.paymentStatus) {
+            query.paymentStatus = req.query.paymentStatus;
+        }
+        // check on order date range
+        if (req.query.startDate && req.query.endDate) {
+            query.orderDate = {
+                $gte: new Date(req.query.startDate),
+                $lte: new Date(req.query.endDate),
+            };
+        }
+
+        // query orders collection with query and userId and populate productId with name and price
+        const orders = await Order.find(query).where({ userId }).populate('productId', 'name price');
         res.json(orders);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch orders' });
@@ -35,19 +58,30 @@ exports.getOrderById = async (req, res) => {
     }
 };
 
-// Update an order by ID
-exports.updateOrderById = async (req, res) => {
+// mark an order as delivered
+exports.markOrderAsDeliveredAndPaid = async (req, res) => {
     try {
-        const updatedOrder = await Order.findByIdAndUpdate(
-            req.params.orderId,
-            req.body,
-            { new: true }
-        );
-        if (!updatedOrder) {
+        const order = await Order.findByIdAndUpdate(req.params.orderId, { deliveryStatus: 'delivered', paymentStatus: 'paid' }, { new: true });
+        if (!order) {
             return res.status(404).json({ error: 'Order not found' });
         }
-        res.json(updatedOrder);
-    } catch (error) {
+        res.json(order);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to update order' });
+    }
+};
+
+// mark an order as cancelled
+exports.markOrderAsCancelled = async (req, res) => {
+    try {
+        const order = await Order.findByIdAndUpdate(req.params.orderId, { deliveryStatus: 'cancelled' }, { new: true });
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+        res.json(order);
+    }
+    catch (error) {
         res.status(500).json({ error: 'Failed to update order' });
     }
 };

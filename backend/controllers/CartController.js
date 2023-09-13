@@ -1,66 +1,87 @@
-const ShoppingCart = require('../models/ShoppingCart');
+const Cart = require('../models/Cart');
 
-// Create a new shopping cart
-exports.createShoppingCart = async (req, res) => {
+// Get shopping cart of current user
+exports.getShoppingCart = async (req, res) => {
     try {
-        const { user, items } = req.body;
-        const shoppingCart = new ShoppingCart({ user, items });
-        const savedShoppingCart = await shoppingCart.save();
-        res.status(201).json(savedShoppingCart);
+        const shoppingCart = await Cart.findOne({ user: req.user.userId });
+        res.json(shoppingCart);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create shopping cart' });
-    }
-};
-
-// Get all shopping carts
-exports.getAllShoppingCarts = async (req, res) => {
-    try {
-        const shoppingCarts = await ShoppingCart.find();
-        res.json(shoppingCarts);
-    } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Failed to fetch shopping carts' });
     }
 };
 
-// Get a single shopping cart by ID
-exports.getShoppingCartById = async (req, res) => {
+// add item to cart
+exports.addItemToCart = async (req, res) => {
     try {
-        const shoppingCart = await ShoppingCart.findById(req.params.shoppingCartId);
-        if (!shoppingCart) {
-            return res.status(404).json({ error: 'Shopping cart not found' });
+        const item = req.body;
+        // check for item allready in cart
+        const existingItem = await Cart.findOne({
+            user: req.user.userId,
+            'items.productId': item.productId,
+            'items.variantId': item.variantId,
+        });
+        if (!existingItem) {
+            // add item to cart
+            const cart = await Cart.findOneAndUpdate(
+                { user: req.user.userId },
+                {
+                    $push: {
+                        items: item,
+                    },
+                },
+                { new: true }
+            );
+            return res.json(existingItem);          
         }
-        res.json(shoppingCart);
+        // return the same cart Item if item already exists
+        res.json(existingItem);       
+
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch shopping cart' });
+        console.log(error);
+        res.status(500).json({ error: 'Failed to add item to cart' });
     }
 };
 
-// Update a shopping cart by ID
-exports.updateShoppingCartById = async (req, res) => {
+// remove item from cart
+exports.removeItemFromCart = async (req, res) => {
     try {
-        const updatedShoppingCart = await ShoppingCart.findByIdAndUpdate(
-            req.params.shoppingCartId,
-            req.body,
+        const itemId = req.params.id;
+        const cart = await Cart.findOneAndUpdate(
+            { user: req.user.userId },
+            {
+                $pull: {
+                    items: {
+                        _id: itemId,
+                    },
+                },
+            },
             { new: true }
         );
-        if (!updatedShoppingCart) {
-            return res.status(404).json({ error: 'Shopping cart not found' });
-        }
-        res.json(updatedShoppingCart);
+        res.json(cart);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update shopping cart' });
+        console.log(error);
+        res.status(500).json({ error: 'Failed to remove item from cart' });
     }
 };
 
-// Delete a shopping cart by ID
-exports.deleteShoppingCartById = async (req, res) => {
+// update item quantity
+exports.updateItemQuantity = async (req, res) => {
     try {
-        const deletedShoppingCart = await ShoppingCart.findByIdAndRemove(req.params.shoppingCartId);
-        if (!deletedShoppingCart) {
-            return res.status(404).json({ error: 'Shopping cart not found' });
-        }
-        res.json(deletedShoppingCart);
+        const itemId = req.params.id;
+        const quantity = req.body.quantity;
+        const cart = await Cart.findOneAndUpdate(
+            { user: req.user.userId, 'items._id': itemId },
+            {
+                $set: {
+                    'items.$.quantity': quantity,
+                },
+            },
+            { new: true }
+        );
+        res.json(cart);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to delete shopping cart' });
+        console.log(error);
+        res.status(500).json({ error: 'Failed to update item quantity' });
     }
 };

@@ -1,0 +1,16 @@
+apple iphone 14 pro 
+
+{
+    space black, 256 gb, price :129999, images: [https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/l/p/-original-imaghxemc3wtcuhb.jpeg?q=70, https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/r/0/6/-original-imaghxemsfczqrvb.jpeg?q=70]
+    space black, 1 TB, price :169999, images: [https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/l/p/-original-imaghxemc3wtcuhb.jpeg?q=70, https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/r/0/6/-original-imaghxemsfczqrvb.jpeg?q=70]
+    gold, 1 TB, price : 1690, images : [https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/i/h/c/-original-imaghxemmqyahnuj.jpeg?q=70, https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/9/s/l/-original-imaghxemhkf65etg.jpeg?q=70]
+    gold, 128 GB, price: 119999, images : [https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/i/h/c/-original-imaghxemmqyahnuj.jpeg?q=70, https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/9/s/l/-original-imaghxemhkf65etg.jpeg?q=70]
+}
+
+highlights : [
+    -> 15.49 cm (6.1 inch) Super Retina XDR Display
+    -> 48MP + 12MP + 12MP | 12MP Front Camera,
+    -> A16 Bionic Chip, 6 Core Processor Processor
+]
+
+Description: NA

@@ -34,7 +34,13 @@ exports.register = async (req, res) => {
         // Save the user to the database
         await newUser.save();
 
-        res.status(201).json({ message: 'User registered successfully' });
+        // Generate a JWT token for the newly created user
+        const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET);
+
+        // remove password from user object
+        newUser.password = undefined;
+        // Send the token and user object back to the client
+        res.status(201).json({user: newUser, token, message: 'User registered successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
@@ -63,8 +69,10 @@ console.log(passwordMatch);
 
         // Generate a JWT token for the user
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-
-        res.json({ token });
+        // remove password from user object
+        user.password = undefined;
+        // Send the token and user object back to the client
+        res.json({ user, token });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });

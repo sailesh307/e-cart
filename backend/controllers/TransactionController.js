@@ -1,11 +1,33 @@
 const Transaction = require('../models/Transaction'); // Import your Transaction model
-
+const Order = require('../models/Order'); // Import your Order model
 // Create a new transaction
-exports.createTransaction = async (req, res) => {
+exports.createTransactionOfCurrentUser = async (req, res) => {
     try {
-        const { user, order, status, amount } = req.body;
-        const transaction = new Transaction({ user, order, status, amount });
+        const { user, paymentStatus } = req; // Get userId and paymentStatus from the request object (added by the middleware)
+        const userId = user.userId;
+        const { orderIds, amount } = req.body;
+        const transaction = new Transaction({ userId, orderIds, amount });
+        if (paymentStatus === 'success') {
+            transaction.status = 'success';
+        }
+        else if (paymentStatus === 'failure') {
+            transaction.status = 'failed';
+        }
+        // save transaction
         const savedTransaction = await transaction.save();
+
+
+        // Now map over orderIds and update payment status in each order
+        const orderIdsList = orderIds.map((order) => {
+            return order.orderId;
+        });
+
+        // if payment is successful
+        if (paymentStatus === 'success') {
+            await Order.updateMany({ _id: { $in: orderIdsList } }, { paymentStatus: 'paid' });
+        }
+
+        // send response
         res.status(201).json(savedTransaction);
     } catch (error) {
         console.error(error);
@@ -13,10 +35,13 @@ exports.createTransaction = async (req, res) => {
     }
 };
 
-// Get all transactions
-exports.getAllTransactions = async (req, res) => {
+// Get all transactions of current user
+exports.getAllTransactionsOfCurrentUser = async (req, res) => {
     try {
-        const transactions = await Transaction.find();
+        const { userId } = req.user; // Get userId from the request object (added by the middleware)
+
+        // Find all transactions of the current user
+        const transactions = await Transaction.find({ userId });
         res.json(transactions);
     } catch (error) {
         console.error(error);
@@ -24,13 +49,19 @@ exports.getAllTransactions = async (req, res) => {
     }
 };
 
-// Get a single transaction by ID
-exports.getSingleTransaction = async (req, res) => {
+// Get a single transaction full details by ID
+exports.getSingleTransactionFullDetailsOfCurrentUser = async (req, res) => {
     try {
-        const transaction = await Transaction.findById(req.params.transactionId);
+        const { userId } = req.user; // Get userId from the request object (added by the middleware)
+
+        // find transaction by id and userId
+
+        const transaction = await Transaction.findOne({ _id: req.params.transactionId, userId });
         if (!transaction) {
             return res.status(404).json({ error: 'Transaction not found' });
         }
+        // populate transaction with order details
+        await (await transaction.populate('orderIds.orderId')).populate('orderIds.orderId.productId');
         res.json(transaction);
     } catch (error) {
         console.error(error);
@@ -38,10 +69,16 @@ exports.getSingleTransaction = async (req, res) => {
     }
 };
 
-// Get transation by username
-exports.getTransactionByUsername = async (req, res) => {
+// Get all transactions full details (only for admin)
+exports.getAllTransactionsFullDetails = async (req, res) => {
     try {
-        const transactions = await Transaction.find({ user: req.params.username });
+        const { limit = 10, page = 1 } = req.query;
+        // Find all transactions
+        const transactions = await Transaction.find()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .sort({ date: -1 }) // sort in descending transaction date
+            .populate('userId', 'username email'); // populate userId with username and email
         res.json(transactions);
     } catch (error) {
         console.error(error);
