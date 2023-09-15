@@ -1,96 +1,22 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import routeNames from '../constants/routeNames';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { Bars3Icon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { logoutUser } from '../state/actions/authActions';
+import { ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Search from './Search';
-import { useState } from 'react';
+import DropDown from './DropDown';
 
 const NavBar = () => {
-    // Access the itemCount from the Redux store
-    const itemCount = useSelector((state) => state.cart.itemCount);
-
-    const dispatch = useDispatch();
-
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        // TODO : If logout successfull then redirect to login page
-        navigate(routeNames.SIGNIN);
-        dispatch(logoutUser());
-    };
-
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
-    };
-
+    const { token } = useSelector((state) => state.auth);
+    const { itemCount } = useSelector((state) => state.cart);
     return (
         <div className="bg-white sticky top-0 z-40">
             <header className="w-full bg-white">
                 <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="border-b border-gray-200">
                         <div className="flex h-16 items-center">
-                            {/* Mobile Menu Icon */}
-                            <button
-                                onClick={toggleMobileMenu}
-                                className="lg:hidden px-2 py-1 text-gray-400 hover:text-gray-500"
-                                aria-label="Open Mobile Menu"
-                                aria-expanded={isMobileMenuOpen}
-                            >
-                                {isMobileMenuOpen ? (
-                                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                                ) : (
-                                    <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-                                )}
-
-                            </button>
-                            {/* Mobile Menu */}
-                            {isMobileMenuOpen && (
-                                <div className="lg:hidden absolute top-16 inset-x-0 z-10 p-2 bg-white border-b border-gray-200">
-                                    {/* Add mobile menu items here */}
-                                    {localStorage.getItem('token') ? (
-                                        // Logged in menu items
-                                        <div className="space-y-2">
-                                            <Link
-                                                to={routeNames.PROFILE}
-                                                className="block text-sm font-medium text-gray-700 hover:text-gray-800"
-                                            >
-                                                Profile
-                                            </Link>
-                                            <Link
-                                                to={routeNames.LOGOUT}
-                                                className="block text-sm font-medium text-gray-700 hover:text-gray-800"
-                                                onClick={handleLogout}
-                                            >
-                                                Logout
-                                            </Link>
-                                        </div>
-                                    ) : (
-                                        // Logged out menu items
-                                        <div className="space-y-2">
-                                            <Link
-                                                to={routeNames.SIGNIN}
-                                                className="block text-sm font-medium text-gray-700 hover:text-gray-800"
-                                            >
-                                                Sign in
-                                            </Link>
-                                            <Link
-                                                to={routeNames.SIGNUP}
-                                                className="block text-sm font-medium text-gray-700 hover:text-gray-800"
-                                            >
-                                                Create account
-                                            </Link>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-
                             {/* Logo */}
-                            <Link to={routeNames.HOME} className="m-4">
+                            <Link to={routeNames.HOME} className="mr-2">
                                 <img
                                     className="h-10 w-auto"
                                     src="../logo192.png"
@@ -104,17 +30,9 @@ const NavBar = () => {
                             <Search />
 
                             <div className="ml-4 flex items-center">
-                                {localStorage.getItem('token') ? (
-                                    // <p >fff</p> logout button
-                                    <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                                        <Link to={routeNames.PROFILE} className="text-sm font-medium text-gray-700 hover:text-gray-800">
-                                            {'Profile'}
-                                        </Link>
-                                        <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                                        <Link to={routeNames.LOGOUT} className="text-sm font-medium text-gray-700 hover:text-gray-800" onClick={handleLogout}>
-                                            Logout
-                                        </Link>
-                                    </div>
+                                {token ? (
+                                    // user profile dropdown menu
+                                    <DropDown />
                                 ) :
 
                                     (<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">

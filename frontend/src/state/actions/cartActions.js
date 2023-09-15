@@ -31,8 +31,11 @@ const changeQuantity = (itemId, quantity) => ({
 });
 
 // fetch the cart from the server with header
-export const fetchCart = () => async (dispatch) => {
-    if(!localStorage.getItem('token')) return;
+export const setCart = () => async (dispatch) => {
+    if (!localStorage.getItem('token')) {
+        dispatch(initializeCart([]));
+        return;
+    };
     try {
         const response = await axios.get(API_URLS.CART, {
             headers: {

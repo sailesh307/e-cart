@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "./components/Loading";
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from "react";
-import { fetchCart } from "./state/actions/cartActions";
+import { setCart } from "./state/actions/cartActions";
 
 
 
@@ -23,7 +23,7 @@ function App() {
 
   // initialize the cart on app load
   useEffect(() => {
-    dispatch(fetchCart());
+    dispatch(setCart());
   }, [dispatch]);
 
 

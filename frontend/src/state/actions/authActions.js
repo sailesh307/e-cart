@@ -2,16 +2,17 @@
 import axios from 'axios';
 import API_URLS from '../../constants/apiUrls';
 import { setError, setLoading, setMessage } from './actions';
+import { setCart } from './cartActions';
 
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 
-export const loginSuccess = (user, token) => ({
+const loginSuccess = (user, token) => ({
     type: LOGIN_SUCCESS,
     payload: { user, token },
 });
 
-export const logoutSuccess = () => ({
+const logoutSuccess = () => ({
     type: LOGOUT_SUCCESS,
 });
 
@@ -29,6 +30,7 @@ export const loginUser = (email, password) => {
             // Dispatch the success action
             dispatch(setMessage('Logged in successfully'));
             dispatch(loginSuccess(user, token));
+            dispatch(setCart());
         } catch (error) {
             dispatch(setError(error.message));
             console.error('Login error:', error);
@@ -51,6 +53,7 @@ export const logoutUser = () => async (dispatch) => {
         
         // Dispatch the success action
         dispatch(setMessage('Logged out successfully'));
+        dispatch(setCart());
         dispatch(logoutSuccess());
     } catch (error) {
         // Handle logout error
@@ -77,6 +80,7 @@ export const signupUser = (username, email, password, role) => {
             dispatch(loginSuccess(user, token));
             dispatch(setMessage('Signed up successfully'));
             console.log('Signed up');
+            dispatch(setCart());
         } catch (error) {
             // display response error message
             dispatch(setError(error.message));
