@@ -1,9 +1,11 @@
 import ProductPage from "./ProductPage";
+import CategoryFilters from "./product/CategoryFilters";
 
 const Home = () => {
   return (
     <div className="home">
-      <ProductPage />
+      <CategoryFilters />
+
     </div>
   );
 };

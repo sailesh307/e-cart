@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from "react";
 import { setCart } from "./state/actions/cartActions";
 import { ToastContainer, toast } from "react-toastify";
+import Checkout from "./components/checkout/Checkout";
 
 
 
@@ -55,6 +56,7 @@ function App() {
             <Route exact path={routeNames.PRODUCTPAGE} element={<ProductPage />} />
             <Route exact path={routeNames.PRODUCT_OVERVIEW} element={<ProducOverview />} />
             <Route exact path={routeNames.SEARCH} element={<Search />} />
+            <Route exact path={routeNames.CHECKOUT} element={<Checkout />} />
             <Route exact path={routeNames.PAYMENT_PAGE} element={<PaymentPage />} />
           </Routes>
         </main>

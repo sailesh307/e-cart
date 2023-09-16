@@ -6,6 +6,7 @@ const routeNames = {
     SEARCH: '/search',
     PRODUCTPAGE: '/productpage',
     PRODUCT_OVERVIEW: '/product/:pid',
+    CHECKOUT: '/checkout',
     PAYMENT_PAGE: '/paymentpage',
 };
 

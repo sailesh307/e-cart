@@ -1,4 +1,4 @@
-import { FETCH_A_PRODUCT_FAILURE, FETCH_A_PRODUCT_REQUEST, FETCH_A_PRODUCT_SUCCESS, FETCH_PRODUCTS_FAILURE, FETCH_PRODUCTS_REQUEST, FETCH_PRODUCTS_SUCCESS } from "../actions/productActions";
+import { FETCH_A_PRODUCT_FAILURE, FETCH_A_PRODUCT_REQUEST, FETCH_A_PRODUCT_SUCCESS, FETCH_PRODUCTS_FAILURE, FETCH_PRODUCTS_REQUEST, FETCH_PRODUCTS_SUCCESS, SET_SORT_OPTION } from "../actions/productActions";
 
 const initialState = {
     products: [],
@@ -7,6 +7,7 @@ const initialState = {
     error: null,
     singleProductLoading: false,
     singleProductError: null,
+    sortOption: null,
 };
 
 const productReducer = (state = initialState, action) => {
@@ -25,6 +26,8 @@ const productReducer = (state = initialState, action) => {
         case FETCH_A_PRODUCT_FAILURE:
             return { ...state, singleProductLoading: false, singleProductError: action.payload };
         ////////////////////////////////////////////
+        case SET_SORT_OPTION:
+            return { ...state, sortOption: action.payload };
         default:
             return state;
     }
