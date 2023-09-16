@@ -13,25 +13,37 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "./components/Loading";
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from "react";
-import { fetchCart } from "./state/actions/cartActions";
+import { setCart } from "./state/actions/cartActions";
+import { ToastContainer, toast } from "react-toastify";
 
 
 
 function App() {
   const loading = useSelector((state) => state.loading);
+  const error = useSelector((state) => state.error);
+  const message = useSelector((state) => state.message);
   const dispatch = useDispatch();
-
   // initialize the cart on app load
   useEffect(() => {
-    dispatch(fetchCart());
+    dispatch(setCart());
   }, [dispatch]);
-
+  
+  useEffect(() => {
+    toast.clearWaitingQueue();
+    if (error) {
+      toast.error(error, { autoClose: 2000 });
+    }
+    if (message) {
+      toast.success(message, { autoClose: 2000 });
+    }
+  }, [error, message]);
 
   return (
     <>
       {/* // <Testing /> */}
       <BrowserRouter>
         <NavBar />
+        <ToastContainer />
 
         {loading && <Loading />}
         <main className="">

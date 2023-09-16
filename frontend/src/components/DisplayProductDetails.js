@@ -14,6 +14,7 @@ function classNames(...classes) {
 
 const DisplayProductDetails = ({ data }) => {
     const dispatch = useDispatch();
+    const { token } = useSelector((state) => state.auth);
 
     //////////////// Data extraction ////////////////////
     /////////extract non changeable attributes //////////
@@ -107,6 +108,11 @@ const DisplayProductDetails = ({ data }) => {
 
     const handleAddToCart = (e) => {
         e.preventDefault();
+        // check if user is logged in
+        if (!token) {
+            navigate(routeNames.SIGNIN);
+            return;
+        }
         const fullName = `${name} (${selectedColor} | ${selectedSize})`;
         // remove 
         const item = {

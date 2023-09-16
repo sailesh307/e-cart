@@ -1,4 +1,3 @@
-const User = require('../models/User');
 const Product = require('../models/Product');
 
 // Create a new product
@@ -22,11 +21,30 @@ exports.createProduct = async (req, res) => {
 // Get all products (paginated) (return on lowest price variant)
 exports.getAllProducts = async (req, res) => {
     try {
-        const {page = 1} = req.query;
+        
+        const { page = 1, sort = null } = req.query;
+        // decode the sort query parameter
+        switch (sort) {
+            case 'priceLowToHigh':
+                sortObject = { 'variant.variantData.price': 1 };
+                break;
+            case 'priceHighToLow':
+                sortObject = { 'variant.variantData.price': -1 };
+                break;
+            case 'bestRating':
+                sortObject = { rating: -1 };
+                break;
+            case 'popular':
+                sortObject = { ratingCount: -1 };
+                break;
+            default:
+                sortObject = { createdAt: -1 };
+        }
+        // get the products
         const products = await Product.find()
+            .sort(sortObject)
             .limit(10)
-            .skip((page - 1) * 10)
-            .sort({ createdAt: -1 });
+            .skip((page - 1) * 10);
         // get the minimum price and data of the product
         let results = [];
         products.forEach((product) => {
