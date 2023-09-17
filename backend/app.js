@@ -35,11 +35,11 @@ const transactionRoutes = require('./routes/transactionRoutes');
 app.get('/', (req, res) => {
     res.send('This is e-cart api');
 });
-// app.use('/api/products', productRoutes);
-// app.use('/api/categories', categoryRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/orders', orderRoutes);
-// app.use('/api/cart', cartRoutes);
-// app.use('/api/transactions', transactionRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 module.exports = app;
