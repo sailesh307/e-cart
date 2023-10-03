@@ -3,7 +3,7 @@ const app = require('./app'); // Import the Express app from app.js
 const PORT = process.env.PORT || 5000;
 
 // Load environment variables from a .env file if needed
-dotenv.config();
+// dotenv.config();
 
 // Middleware
 // Enable CORS for all origins
