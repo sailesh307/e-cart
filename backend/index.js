@@ -11,7 +11,11 @@ const PORT = process.env.PORT || 5000;
 dotenv.config();
 
 // Middleware
-app.use(cors());
+// Enable CORS for all origins
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true, // Allow credentials (cookies)
+}));
 app.use(bodyParser.json());
 
 // Connect to MongoDB using mongoose
@@ -26,8 +30,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
-const transactionRoutes = require('./routes/transactionRoutes');
-
+const addressRoutes = require('./routes/addressRoutes');
 // Use the routes
 app.get('/', (req, res) => {
     res.send('This is e-cart api');
@@ -37,7 +40,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
-app.use('/api/transactions', transactionRoutes);
+app.use('/api/address', addressRoutes);
 // ...other server setup code...
 
 // Start the server

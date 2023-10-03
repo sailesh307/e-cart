@@ -7,7 +7,7 @@ exports.getShoppingCart = async (req, res) => {
         res.json(shoppingCart);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Failed to fetch shopping carts' });
+        res.status(500).json({ message: 'Failed to fetch shopping carts' });
     }
 };
 
@@ -39,7 +39,7 @@ exports.addItemToCart = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Failed to add item to cart' });
+        res.status(500).json({ message: 'Failed to add item to cart' });
     }
 };
 
@@ -61,7 +61,7 @@ exports.removeItemFromCart = async (req, res) => {
         res.json(cart);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Failed to remove item from cart' });
+        res.status(500).json({ message: 'Failed to remove item from cart' });
     }
 };
 
@@ -82,6 +82,6 @@ exports.updateItemQuantity = async (req, res) => {
         res.json(cart);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Failed to update item quantity' });
+        res.status(500).json({ message: 'Failed to update item quantity' });
     }
 };

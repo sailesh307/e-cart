@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    username: {
+    firstName: {
         type: String,
         required: true,
-        unique: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
     },
     email: {
         type: String,
@@ -19,6 +22,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['customer', 'admin', 'seller'],
         default: 'customer',
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
     },
     // Additional fields such as name, address, etc.
 });

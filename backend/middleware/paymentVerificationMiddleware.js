@@ -10,7 +10,7 @@ const paymentVerificationMiddleware = (req, res, next) => {
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Failed to verify payment' });
+        res.status(500).json({ message: 'Failed to verify payment' });
     }
 };
 
