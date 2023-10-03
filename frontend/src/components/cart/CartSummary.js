@@ -1,10 +1,12 @@
 import React from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import routeNames from '../../constants/routeNames';
 import { formatPrice } from '../../utils/formating';
+import { setProducts } from '../../state/actions/checkout';
 
 const CartSummary = () => {
+    const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart);
     let { total, itemCount } = cart;
     const navigate = useNavigate();
@@ -12,6 +14,8 @@ const CartSummary = () => {
 
     const handleCheckout = (e) => {
         e.preventDefault();
+        // ADD Products to Order
+        dispatch(setProducts(cart.items));
         navigate(routeNames.CHECKOUT);
     }
 
@@ -41,7 +45,7 @@ const CartSummary = () => {
                         Summary
                     </h2>
                     <p className='text-gray-500'>
-                        Total Amount: ₹ {total}
+                        Total Amount: {total}
                     </p>
                     {/* Add "Order Now" button or any other checkout functionality */}
                     <button

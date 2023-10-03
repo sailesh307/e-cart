@@ -1,24 +1,11 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
-import ProductPage from '../ProductPage'
-import { useDispatch } from 'react-redux'
-import { fetchProducts, setSortOption } from '../../state/actions/productActions'
+import { Bars3Icon, ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+import ProductPage from './ProductPage'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchProducts, setPagination, setSortOption } from '../../state/actions/productActions'
+import PaginationComponent from './PaginationComponents'
 
 const sortOptions = [
     { id: 'newest', name: 'Newest'},
@@ -76,8 +63,10 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function CategoryFilters() {
+export default function Filters() {
     const dispatch = useDispatch();
+    const state = useSelector((state) => state.allProducts);
+    const { page } = state;
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
     const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0])
@@ -87,6 +76,30 @@ export default function CategoryFilters() {
         dispatch(setSortOption(option.id));
         dispatch(fetchProducts());
     }
+
+    const [gridView, setGridView] = useState(false);
+
+    const handleGridView = () => {
+        setGridView(!gridView);        
+    }
+
+    const [currentPage, setCurrentPage] = useState(page);
+
+    const nextPage = () => {
+        dispatch(setPagination(currentPage + 1));
+        setCurrentPage(currentPage + 1);
+        dispatch(fetchProducts());
+    }
+
+    const prevPage = () => {
+        dispatch(setPagination(currentPage - 1));
+        setCurrentPage(currentPage - 1);
+        dispatch(fetchProducts());
+    }
+
+    useEffect(() => {
+        setCurrentPage(page);
+    }, [page, dispatch]);
 
     return (
         <div className="bg-white">
@@ -193,13 +206,13 @@ export default function CategoryFilters() {
 
                 <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex items-baseline justify-between border-b border-gray-200 pb-6">
-                        <h1 className="text-4xl font-bold tracking-tight text-gray-900">New Arrivals</h1>
+                        <h1 className="text-4xl font-bold tracking-tight text-gray-900">Products</h1>
 
                         <div className="flex items-center">
                             <Menu as="div" className="relative inline-block text-left">
-                                <div>
+                                <div className="bg-gray-100 shadow-md rounded-lg p-2">
                                     <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                                        Sort
+                                        Sort By : {selectedSortOption.name}
                                         <ChevronDownIcon
                                             className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                                             aria-hidden="true"
@@ -241,9 +254,11 @@ export default function CategoryFilters() {
                                 </Transition>
                             </Menu>
 
-                            <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
+                            <button onClick={handleGridView} type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
                                 <span className="sr-only">View grid</span>
-                                <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
+                                {gridView ? <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
+                                    : <Bars3Icon className="h-5 w-5" aria-hidden="true" />
+                                }
                             </button>
                             <button
                                 type="button"
@@ -261,7 +276,7 @@ export default function CategoryFilters() {
                             Products
                         </h2>
 
-                        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
                             {/* Filters */}
                             <form className="hidden lg:block">
                                 <h3 className="sr-only">Categories</h3>
@@ -318,8 +333,13 @@ export default function CategoryFilters() {
                             </form>
 
                             {/* Product grid */}
-                            <div className="lg:col-span-3">
-                                <ProductPage />
+                            <div className="lg:col-span-4 flex flex-col items-center">
+                                <ProductPage gridView={gridView} />
+                                <PaginationComponent
+                                    onPrevClick={prevPage}
+                                    currPage={currentPage}
+                                    onNextClick={nextPage}
+                                />
                             </div>
                         </div>
                     </section>

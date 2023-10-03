@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import routeNames from "../constants/routeNames";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../state/actions/authActions";
+import routeNames from "../../constants/routeNames";
+import { useDispatch, useSelector } from "react-redux";
+import { clearErrors, loginUser } from "../../state/actions/userActions";
+import { Spinner } from "@material-tailwind/react";
+import { enqueueSnackbar } from "notistack";
 
 const Login = () => {
+    const {loading, error } = useSelector(state => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -30,10 +33,33 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         await dispatch(loginUser(formData.email, formData.password));
-        if (localStorage.getItem('token')) {
-            navigate(routeNames.HOME);
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            enqueueSnackbar('Login Successful', { variant: 'success' });
+            if (user.role === 'admin') {
+                navigate(routeNames.ADMIN_DASHBOARD);
+            } else {
+                navigate(routeNames.HOME);
+            }
         }
     };
+    
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (user) {
+            if (user.role === 'admin') {
+                navigate(routeNames.ADMIN_DASHBOARD);
+            } else {
+                navigate(routeNames.HOME);
+            }
+        }
+        if (error) {
+            enqueueSnackbar(error, { variant: 'error' });
+            dispatch(clearErrors());
+        }
+    }, [error, dispatch, navigate]);
+
 
     return (
         <>
@@ -113,7 +139,7 @@ const Login = () => {
                                 type="submit"
                                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                                Sign in
+                                {loading ? <Spinner /> : 'Sign In'}
                             </button>
                         </div>
                     </form>

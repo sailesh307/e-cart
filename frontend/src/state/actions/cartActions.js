@@ -1,9 +1,10 @@
-// src/state/actions/cartActions.js
-
-import axios from "axios";
 import API_URLS from "../../constants/apiUrls";
+import { Axios } from "../../Axios";
 
 // Action types
+export const CART_REQUEST = 'CART_REQUEST';
+export const CART_SUCCESS = 'CART_SUCCESS';
+export const CART_FAILURE = 'CART_FAILURE';
 export const ADD_TO_CART = 'ADD_TO_CART';
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const CHANGE_QUANTITY = 'CHANGE_QUANTITY';
@@ -30,6 +31,20 @@ const changeQuantity = (itemId, quantity) => ({
     payload: { itemId, quantity },
 });
 
+const requestCart = () => ({
+    type: CART_REQUEST,
+});
+
+const cartFailure = (error) => ({
+    type: CART_FAILURE,
+    payload: error,
+});
+
+export const clearErrors = () => ({
+    type: CART_FAILURE,
+    payload: null,
+});
+
 // fetch the cart from the server with header
 export const setCart = () => async (dispatch) => {
     if (!localStorage.getItem('token')) {
@@ -37,7 +52,8 @@ export const setCart = () => async (dispatch) => {
         return;
     };
     try {
-        const response = await axios.get(API_URLS.CART, {
+        dispatch(requestCart());
+        const response = await Axios.get(API_URLS.CART, {
             headers: {
                 'x-auth-token': localStorage.getItem('token'),
             },
@@ -47,13 +63,15 @@ export const setCart = () => async (dispatch) => {
         dispatch(initializeCart(items));
     } catch (error) {
         console.log(error);
+        dispatch(cartFailure(error));
     }
 }
 
 export const addProductToCart = (product) => async (dispatch) => {
     if(!localStorage.getItem('token')) return;
     try {
-        await axios.post(API_URLS.CART, product, {
+        dispatch(requestCart());
+        await Axios.post(API_URLS.CART, product, {
             headers: {
                 'x-auth-token': localStorage.getItem('token'),
             },
@@ -61,13 +79,15 @@ export const addProductToCart = (product) => async (dispatch) => {
         dispatch(addToCart(product));
     } catch (error) {
         console.log(error);
+        dispatch(cartFailure(error));
     }
 };
 
 export const removeProductFromCart = (itemId) => async (dispatch) => {
     if(!localStorage.getItem('token')) return;
     try {
-        await axios.delete(`${API_URLS.CART}/${itemId}`, {
+        dispatch(requestCart());
+        await Axios.delete(`${API_URLS.CART}/${itemId}`, {
             headers: {
                 'x-auth-token': localStorage.getItem('token'),
             },
@@ -75,13 +95,15 @@ export const removeProductFromCart = (itemId) => async (dispatch) => {
         dispatch(removeFromCart(itemId));
     } catch (error) {
         console.log(error);
+        dispatch(cartFailure(error));
     }
 };
 
 export const changeProductQuantity = (itemId, quantity) => async (dispatch) => {
     if (!localStorage.getItem('token')) return;
     try {
-        await axios.put(`${API_URLS.CART}/${itemId}`, {  quantity }, {
+        dispatch(requestCart());
+        await Axios.put(`${API_URLS.CART}/${itemId}`, {  quantity }, {
             headers: {
                 'x-auth-token': localStorage.getItem('token'),
             },
@@ -89,5 +111,6 @@ export const changeProductQuantity = (itemId, quantity) => async (dispatch) => {
         dispatch(changeQuantity(itemId, quantity));
     } catch (error) {
         console.log(error);
+        dispatch(cartFailure(error));
     }
 };

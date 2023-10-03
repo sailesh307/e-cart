@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaUser, FaEnvelope, FaLock, FaUserPlus, FaEye, FaEyeSlash } from 'react-icons/fa'; // Import icons from react-icons
 import { Link, useNavigate } from 'react-router-dom';
-import routeNames from '../constants/routeNames';
-import { useDispatch } from 'react-redux';
-import { signupUser } from '../state/actions/authActions';
+import routeNames from '../../constants/routeNames';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearErrors, signupUser } from '../../state/actions/userActions';
+import { Spinner } from '@material-tailwind/react';
+import { enqueueSnackbar } from 'notistack';
 
 const Signup = () => {
+    const { loading, error } = useSelector((state) => state.user);
     // 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-
 
     ///////// ui
     const [formData, setFormData] = useState({
@@ -38,14 +39,22 @@ const Signup = () => {
         e.preventDefault();
         // check if password and confirm password are same
         if (formData.password !== formData.cpassword) {
-            alert('Password and Confirm Password do not match');
+            enqueueSnackbar('Password and Confirm Password do not match', { variant: 'error' });
             return;
         }
-        await dispatch(signupUser(formData.username, formData.email, formData.password, formData.role));
+        dispatch(signupUser(formData.username, formData.email, formData.password, formData.role));
         if (localStorage.getItem('token')) {
+            enqueueSnackbar('Signup Successful', { variant: 'success' });
             navigate(routeNames.HOME);
         }
     };
+
+    useEffect(() => {
+        if (error) {
+            enqueueSnackbar(error, { variant: 'error' });
+            dispatch(clearErrors());
+        }
+    }, [dispatch, error]);
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -173,7 +182,7 @@ const Signup = () => {
                             type="submit"
                             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            Sign up
+                            {loading ? <Spinner /> : 'Sign Up'}
                         </button>
                     </div>
                 </form>

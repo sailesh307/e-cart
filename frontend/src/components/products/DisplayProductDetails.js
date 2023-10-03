@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { useDispatch, useSelector } from 'react-redux'
-import routeNames from '../constants/routeNames'
+import routeNames from '../../constants/routeNames'
 import { useNavigate } from 'react-router-dom'
 import SelectionBox from './SelectionBox'
-import { addProductToCart } from '../state/actions/cartActions'
-import DisplayImages from './DisplayImages'
-import { formatRating, formatRatingCount } from '../utils/formating'
+import { addProductToCart } from '../../state/actions/cartActions'
+import DisplayImages from '../DisplayImages'
+import { formatRating, formatRatingCount } from '../../utils/formating'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -14,7 +14,7 @@ function classNames(...classes) {
 
 const DisplayProductDetails = ({ data }) => {
     const dispatch = useDispatch();
-    const { token } = useSelector((state) => state.auth);
+    const { token } = useSelector((state) => state.user);
 
     //////////////// Data extraction ////////////////////
     /////////extract non changeable attributes //////////
@@ -129,7 +129,7 @@ const DisplayProductDetails = ({ data }) => {
     return (
         <div className="bg-white flex flex-col lg:flex-row">
             {/* Left side for images */}
-            <div className="md:w-1/2">
+            <div className="lg:w-1/2">
                 {/* center it */}
                 <div className="pt-6 m-4">
                     {/* Image gallery */}
@@ -138,8 +138,8 @@ const DisplayProductDetails = ({ data }) => {
             </div>
 
             {/* Right side for product details */}
-            <div className="lg:w-1/2 p-4">
-                <div className="mx-auto max-w-2xl pb-16 pt-10">
+            <div className="lg:w-1/2">
+                <div className="mx-auto max-w-2xl pb-16 pt-10 p-5">
                     <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
                         {`${name} (${selectedColor} | ${selectedSize})`}
                     </h1>
@@ -150,7 +150,7 @@ const DisplayProductDetails = ({ data }) => {
                         <p className="text-3xl tracking-tight text-gray-900">₹ {currentPrice}</p>
 
                         {/* Reviews */}
-                        <div className="mt-6">
+                        {rating && <div className="mt-6">
                             <h3 className="sr-only">Reviews</h3>
                             <div className="flex items-center">
                                 <p className="text-sm text-gray-900">
@@ -176,7 +176,7 @@ const DisplayProductDetails = ({ data }) => {
                                     {formatRatingCount(ratingCount)} reviews
                                 </a>
                             </div>
-                        </div>
+                        </div>}
 
                         <form className="mt-10">
                             {/* Colors */}

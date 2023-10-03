@@ -1,5 +1,5 @@
 // src/state/reducers/cartReducer.js
-import { ADD_TO_CART, CHANGE_QUANTITY, INITIALIZE_CART, REMOVE_FROM_CART } from '../actions/cartActions';
+import { ADD_TO_CART, CART_FAILURE, CART_REQUEST, CHANGE_QUANTITY, INITIALIZE_CART, REMOVE_FROM_CART } from '../actions/cartActions';
 
 // const items = [
 //     {
@@ -18,16 +18,25 @@ const initialState = {
     items: null,
     total: 0,
     itemCount: 0,
+    loading: false,
+    error: null,
 };
 
 const cartReducer = (state = initialState, action) => {
     switch (action.type) {
+        case CART_REQUEST: {
+            return {
+                ...state,
+                loading: true,
+            };
+        }
         case INITIALIZE_CART: {
             return {
                 ...state,
                 items: action.payload,
                 total: action.payload.reduce((total, item) => total + item.price * item.quantity, 0),
                 itemCount: action.payload.reduce((total, item) => total + item.quantity, 0),
+                loading: false,
             };
         }
         case ADD_TO_CART: {
@@ -38,6 +47,7 @@ const cartReducer = (state = initialState, action) => {
                 items: [...state.items, newItem],
                 total: state.total + newItem.price,
                 itemCount: state.itemCount + 1,
+                loading: false,
             };
         }
         case REMOVE_FROM_CART: {
@@ -54,6 +64,7 @@ const cartReducer = (state = initialState, action) => {
                     items: updatedItems,
                     total: state.total - itemToRemove.price * itemToRemove.quantity,
                     itemCount: state.itemCount - itemToRemove.quantity,
+                    loading: false,
                 };
             }
         }
@@ -70,10 +81,18 @@ const cartReducer = (state = initialState, action) => {
                     ...state,
                     total: state.total + itemToChange.price * quantityDifference,
                     itemCount: state.itemCount + quantityDifference,
+                    loading: false,
                 };
             }
         }
             break;
+        case CART_FAILURE: {
+            return {
+                ...state,
+                error: action.payload,
+                loading: false,
+            };
+        }
 
         default:
             return state;

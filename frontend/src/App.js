@@ -1,65 +1,108 @@
 import Home from "./components/Home";
-import Login from "./components/Login";
-import NavBar from "./components/NavBar";
+import Login from "./components/user/Login";
+import NavBar from "./components/layout/header/NavBar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Signup from "./components/Signup";
+import Signup from "./components/user/Signup";
 import routeNames from "./constants/routeNames";
 import Cart from "./components/cart/Cart";
-import ProducOverview from "./components/ProductOverview";
-import ProductPage from "./components/ProductPage";
-import Search from "./components/Search";
-import PaymentPage from "./components/PaymentPage";
 import { useDispatch, useSelector } from "react-redux";
-import Loading from "./components/Loading";
 import 'react-toastify/dist/ReactToastify.css';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setCart } from "./state/actions/cartActions";
-import { ToastContainer, toast } from "react-toastify";
 import Checkout from "./components/checkout/Checkout";
+import ProductPage from "./components/products/ProductPage";
+import ProducOverview from "./components/products/ProductOverview";
+import Filters from "./components/products/CategoryFilters";
+import ProtectedRoutes from "./ProtectedRoutes";
+import Dashboard from "./components/admin/Dashboard";
+import OrderList from "./components/admin/OrderList";
+import MainData from "./components/admin/MainData";
+import UsersList from "./components/admin/UsersList";
+import Account from "./components/user/Account";
+import CreateProduct from "./components/admin/product/CreateProduct";
+import ProductList from "./components/admin/product/ProductList";
+import UpdateProduct from "./components/admin/product/UpdateProduct";
+import Footer from "./components/layout/footer/Footer";
 
-
-
-function App() {
-  const loading = useSelector((state) => state.loading);
-  const error = useSelector((state) => state.error);
-  const message = useSelector((state) => state.message);
+const App = () => {
   const dispatch = useDispatch();
-  // initialize the cart on app load
+  const [navVisible, setNavVisible] = useState(true);
+  const { user } = useSelector((state) => state.user);
   useEffect(() => {
-    dispatch(setCart());
-  }, [dispatch]);
-  
-  useEffect(() => {
-    toast.clearWaitingQueue();
-    if (error) {
-      toast.error(error, { autoClose: 2000 });
+    setNavVisible(!user || user.role === 'customer');
+    if (user) {
+      dispatch(setCart());
     }
-    if (message) {
-      toast.success(message, { autoClose: 2000 });
-    }
-  }, [error, message]);
 
+  }, [dispatch, user]);
+  
   return (
     <>
-      {/* // <Testing /> */}
+      
       <BrowserRouter>
-        <NavBar />
-        <ToastContainer />
-
-        {loading && <Loading />}
+        {navVisible && <NavBar />}
         <main className="">
           <Routes>
             <Route exact path={routeNames.HOME} element={<Home />} />
             <Route exact path={routeNames.SIGNIN} element={<Login />} />
             <Route exact path={routeNames.SIGNUP} element={<Signup />} />
+            <Route exact path={routeNames.ACCOUNT} element={<Account />} />
             <Route exact path={routeNames.CART} element={<Cart />} />
             <Route exact path={routeNames.PRODUCTPAGE} element={<ProductPage />} />
             <Route exact path={routeNames.PRODUCT_OVERVIEW} element={<ProducOverview />} />
-            <Route exact path={routeNames.SEARCH} element={<Search />} />
+            <Route exact path={routeNames.SEARCH} element={<Filters />} />
             <Route exact path={routeNames.CHECKOUT} element={<Checkout />} />
-            <Route exact path={routeNames.PAYMENT_PAGE} element={<PaymentPage />} />
+            <Route exact path={routeNames.ADMIN_UPDATE_PRODUCT(':pid')} element={<UpdateProduct />} />
+
+            {/* admin */}
+            {/* main data */}
+            <Route exact path={routeNames.ADMIN_DASHBOARD} element={
+              <ProtectedRoutes >
+                <Dashboard activeTab={0}>
+                  <MainData />
+                </Dashboard>
+              </ProtectedRoutes>
+            } />
+
+            {/* all users */}
+            <Route exact path={routeNames.ADMIN_USERS} element={
+              <ProtectedRoutes >
+                <Dashboard activeTab={4}>
+                  < UsersList/>
+                </Dashboard>
+              </ProtectedRoutes>
+            } />
+
+            {/* all orders */}
+            <Route exact path={routeNames.ADMIN_ORDERS} element={
+              <ProtectedRoutes >
+                <Dashboard activeTab={1}>
+                  <OrderList />
+                </Dashboard>
+              </ProtectedRoutes>
+            } />
+            
+            {/* all products */}
+            <Route exact path={routeNames.ADMIN_PRODUCTS} element={
+              <ProtectedRoutes >
+                <Dashboard activeTab={2}>
+                  <ProductList />
+                </Dashboard>
+              </ProtectedRoutes>
+            } />
+
+            {/* create product */}
+            <Route exact path={routeNames.ADMIN_NEW_PRODUCT} element={
+              <ProtectedRoutes >
+                <Dashboard activeTab={3}>
+                  <CreateProduct />
+                </Dashboard>
+              </ProtectedRoutes>
+            } />
+            
           </Routes>
         </main>
+        <Footer />
       </BrowserRouter>
     </>
 

@@ -1,141 +1,199 @@
-import React, { useState } from 'react';
+import Typography from '@mui/material/Typography';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Button from '@mui/material/Button';
+import { useEffect, useState } from 'react';
+import { Axios } from '../../Axios';
+import API_URLS from '../../constants/apiUrls';
+import Address from './Address';
+import Loader from '../layout/loader/Loader';
+import { Card, Radio } from '@mui/material';
+import { Delete, Edit } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDeliveryAddress } from '../../state/actions/checkout';
+import { enqueueSnackbar } from 'notistack';
 
-const AddressForm = () =>{
-    const [addressData, setAddressData] = useState({
-        name: '',
-        phoneNo: '',
-        addressLine1: '',
-        addressLine2: '',
-        city: '',
-        state: '',
-        pincode: '',
-    });
+const AddressForm = () => {
+    const dispatch = useDispatch();
+    const deliveryAddress = useSelector((state) => state.checkout.address);
+    const handleDeliveryAddressChange = (address) => {
+        dispatch(setDeliveryAddress(address));
+    }
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        // TODO: Add validation 
+    const [addresses, setAddresses] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [addressToUpdate, setAddressToUpdate] = useState({});
 
-        setAddressData({ ...addressData, [name]: value });
+    const [isAdding, setIsAdding] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+
+
+    // Rerender the addresses when the addresses array changes
+    useEffect(() => {
+        const fetchAddresses = async () => {
+            try {
+                setLoading(true);
+                const response = await Axios.get(API_URLS.ADDRESS, {
+                    headers: {
+                        'x-auth-token': localStorage.getItem('token'),
+                    },
+                });
+                const { data } = response;
+                setAddresses(data);
+            }
+            catch (error) {
+                console.log(error);
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        fetchAddresses();
+    }, []);
+
+    useEffect(() => {
+    }, [dispatch]);
+
+    const handleAddAddress = async (addressData) => {
+        try {
+            setLoading(true);
+            const response = await Axios.post(API_URLS.ADDRESS, addressData, {
+                headers: {
+                    'x-auth-token': localStorage.getItem('token'),
+                },
+            });
+            const { data } = response;
+            // Trigger a rerender by updating the addresses state
+            setAddresses([...addresses, data]);
+            enqueueSnackbar('Address added successfully', { variant: 'success' });
+        }
+        catch (error) {
+            console.log(error);
+            enqueueSnackbar('Something went wrong', { variant: 'error' });
+        }
+        finally {
+            setLoading(false);
+            setIsAdding(false);
+        }
+    }
+
+    const handleUpdateAddress = async (addressData) => {
+        try {
+            setLoading(true);
+            const response = await Axios.put(API_URLS.ADDRESS + '/' + addressData._id
+                , addressData, {
+                headers: {
+                    'x-auth-token': localStorage.getItem('token'),
+                },
+            });
+            const { data } = response;
+            // Trigger a rerender by updating the addresses state
+            setAddresses(addresses.map((address) => {
+                if (address._id === data._id) {
+                    return data;
+                }
+                return address;
+            }));
+            enqueueSnackbar('Address updated successfully', { variant: 'success' });
+        }
+        catch (error) {
+            console.log(error);
+            enqueueSnackbar('Something went wrong', { variant: 'error' });
+        }
+        finally {
+            setLoading(false);
+            setIsEditing(false);
+            setAddressToUpdate({});
+        }
+    }
+
+    const handleDeleteAddress = async (id) => {
+        try {
+            setLoading(true);
+            const response = await Axios.delete(`${API_URLS.ADDRESS}/${id}`, {
+                headers: {
+                    'x-auth-token': localStorage.getItem('token'),
+                },
+            });
+            const { data } = response;
+            console.log(data);
+            // Trigger a rerender by updating the addresses state
+            setAddresses(addresses.filter((address) => address._id !== id));
+            enqueueSnackbar('Address deleted successfully', { variant: 'success' });
+        }
+        catch (error) {
+            console.log(error);
+            enqueueSnackbar('Something went wrong', { variant: 'error' });
+        }
+        finally {
+            setLoading(false);
+        }
+    }
+
+    
+
+
+
+    const renderAddresses = () => {
+        return addresses.map((address) => (
+            <Card key={address._id} 
+                // if selectedaddress then add a border to it 
+                className={
+                    `${
+                        deliveryAddress?._id === address._id ? 'border-2 border-blue-500' : ''
+                    } p-3 hover:border-blue-800 hover:cursor-pointer`
+                }
+                onClick={() => {
+                    handleDeliveryAddressChange(address);
+                }}
+            >
+                <FormControlLabel
+                    control={<Radio color="primary" />}
+                    label="Select"
+                    checked={deliveryAddress?._id === address._id}
+                    
+                />
+                <Typography variant="h6">Address</Typography>
+                <Typography>{address.firstName} {address.lastName}</Typography>
+                <Typography>{address.address}</Typography>
+                <Typography>{address.city}, {address.state}, {address.country}, {address.pinCode}</Typography>
+                <Typography>{address.mobileNumber}</Typography>
+                
+                <Button variant="contained" color="primary" onClick={
+                    () => {
+                        setIsEditing(true);
+                        setAddressToUpdate(address);
+                    }
+                }>
+                    <Edit />
+                </Button>
+                <Button variant="contained" color="secondary" onClick={() => handleDeleteAddress(address._id)}>
+                    <Delete />
+                </Button>
+            </Card>
+        ));
     };
+    return loading ?
+        <Loader /> : (
+        <>
+            <Typography variant="h6" gutterBottom>
+                Shipping address
+            </Typography>
+            {
+                isAdding ? (
+                    <Address onSubmit={handleAddAddress} editing={setIsAdding} />
+                ) :
+                    isEditing ? (
+                        <Address onSubmit={handleUpdateAddress} address={addressToUpdate} editing={setIsEditing} />
+                    ) :
+                        <>
+                            {renderAddresses()}
+                            <Button variant="contained" color="primary" onClick={() => setIsAdding(true)}>
+                                Add Address
+                            </Button>
+                        </>
 
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-        // TODO: add action to save address
-        console.log(addressData);
-    };
-
-    return (
-        <div className="bg-gray-200 shadow-md p-6 rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4">Shipping Address</h2>
-            <form onSubmit={handleFormSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                            Full Name
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            required
-                            value={addressData.name}
-                            onChange={handleInputChange}
-                            className="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="phoneNo" className="block text-sm font-medium text-gray-700">
-                            Phone Number
-                        </label>
-                        <input
-                            type="text"
-                            id="phoneNo"
-                            name="phoneNo"
-                            required
-                            value={addressData.phoneNo}
-                            onChange={handleInputChange}
-                            className="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700">
-                            Address Line 1
-                        </label>
-                        <input
-                            type="text"
-                            id="addressLine1"
-                            name="addressLine1"
-                            required
-                            value={addressData.addressLine1}
-                            onChange={handleInputChange}
-                            className="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700">
-                            Address Line 2
-                        </label>
-                        <input
-                            type="text"
-                            id="addressLine2"
-                            name="addressLine2"
-                            value={addressData.addressLine2}
-                            onChange={handleInputChange}
-                            className="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                            Town/City
-                        </label>
-                        <input
-                            type="text"
-                            id="city"
-                            name="city"
-                            required
-                            value={addressData.city}
-                            onChange={handleInputChange}
-                            className="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                            State
-                        </label>
-                        <input
-                            type="text"
-                            id="state"
-                            name="state"
-                            required
-                            value={addressData.state}
-                            onChange={handleInputChange}
-                            className="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="pincode" className="block text-sm font-medium text-gray-700">
-                            Pincode
-                        </label>
-                        <input
-                            type="text"
-                            id="pincode"
-                            name="pincode"
-                            value={addressData.pincode}
-                            onChange={handleInputChange}
-                            className="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                </div>
-                <div className="mt-4">
-                    <button
-                        type="submit"
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none"
-                    >
-                        Save Address
-                    </button>
-                </div>
-            </form>
-        </div>
+            }
+        </>
     );
 }
 

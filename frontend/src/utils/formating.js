@@ -11,6 +11,7 @@ export function formatRatingCount(count) {
 }
 
 export function formatRating(rating) {
+    if(!rating) return null;
     return rating.toFixed(1);
 }
 
