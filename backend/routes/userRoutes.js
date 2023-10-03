@@ -12,6 +12,5 @@ router.post('/login', UserController.login);
 // Protected route for user profile
 router.get('/profile', authMiddleware, UserController.profile);
 
-// Add more routes for user-related operations (e.g., update profile, change password, etc.)
-
+router.get('/all', UserController.getAllUsers);
 module.exports = router;

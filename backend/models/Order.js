@@ -1,44 +1,32 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
+    // order id is not required because it is automatically generated
+    // by MongoDB when we insert a new document
+    // _id: mongoose.Schema.Types.ObjectId,
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true,
-    },
-    quantity: {
-        type: Number,
-        required: true,
-        min: 1,
-    },
-    total: {
-        type: Number,
-        required: true,
-    },
-    deliveryStatus: {
-        type: String,
-        enum: ['pending', 'delivered', 'cancelled'],
-        default: 'pending',
-    },
-    paymentStatus: {
-        type: String,
-        enum: ['pending', 'paid'],
-        default: 'pending',
-    },
     orderDate: {
         type: Date,
         default: Date.now,
     },
-    deliveredDate: {
-        type: Date,
+    totalAmount: {
+        type: Number,
+        default: 0,
+        required: true,
     },
-    cancelledDate: {
-        type: Date,
+    orderStatus: {
+        type: String,
+        enum: ['pending', 'processing', 'shipped', 'delivered'],
+        default: 'pending',
+    },
+    shippingAddressId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address',
+        required: true,
     },
 });
 

@@ -6,10 +6,10 @@ const bcrypt = require('bcrypt');
 // Function to register a new user
 exports.register = async (req, res) => {
     try {
-        const { username, email, password , role} = req.body;
+        const { firstName, lastName, email, password, role } = req.body;
         // check if empty string
-        if (!username || !email || !password) {
-            return res.status(400).json({ message: 'Please fill out all fields' });
+        if (!firstName || !lastName || !email || !password) {
+            return res.status(400).json({ message: 'Please fill all fields' });
         }
 
         // Check if the user with the given email or username already exists
@@ -23,11 +23,12 @@ exports.register = async (req, res) => {
 
         // Create a new user document
         const newUser = new User({
-            username,
+            firstName,
+            lastName,
             email,
             password: hashedPassword,
         });
-        if(role){
+        if (role) {
             newUser.role = role;
         }
 
@@ -40,7 +41,7 @@ exports.register = async (req, res) => {
         // remove password from user object
         newUser.password = undefined;
         // Send the token and user object back to the client
-        res.status(201).json({user: newUser, token, message: 'User registered successfully' });
+        res.status(201).json({ user: newUser, token, message: 'User registered successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
@@ -61,10 +62,10 @@ exports.login = async (req, res) => {
         }
         // Compare the provided password with the stored hashed password
         const passwordMatch = await bcrypt.compare(password, user.password);
-console.log(passwordMatch);
+        console.log(passwordMatch);
         // If the passwords don't match, return an error
         if (!passwordMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Invalid Password' });
         }
 
         // Generate a JWT token for the user
@@ -100,4 +101,13 @@ exports.profile = async (req, res) => {
     }
 };
 
-// Add more functions for other user-related operations as needed
+// get all users
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        res.json({ users });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
