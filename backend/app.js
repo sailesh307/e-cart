@@ -29,7 +29,6 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
-const transactionRoutes = require('./routes/transactionRoutes');
 
 // Use the routes
 app.get('/', (req, res) => {
@@ -40,6 +39,5 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
-app.use('/api/transactions', transactionRoutes);
 
 module.exports = app;
