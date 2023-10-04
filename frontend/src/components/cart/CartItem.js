@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import routeNames from "../../constants/routeNames";
 import { useDispatch } from "react-redux";
 import { changeProductQuantity, removeProductFromCart } from "../../state/actions/cartActions";
-import { setMessage } from "../../state/actions/actions";
 import { formatPrice } from "../../utils/formating";
+import { enqueueSnackbar } from "notistack";
 
 const CartItem = ({ item }) => {
     let { _id, productId, variantId, name, price, color, quantity, image } = item;
@@ -11,7 +11,7 @@ const CartItem = ({ item }) => {
     const dispatch = useDispatch();
 
     const handleRemoveFromCart = () => {
-        dispatch(setMessage('Removed from cart'));
+        enqueueSnackbar('Removed from cart', { variant: 'success' });
         dispatch(removeProductFromCart(_id));
     };
 

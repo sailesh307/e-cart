@@ -1,14 +1,24 @@
 import React from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import routeNames from '../../constants/routeNames';
+import { formatPrice } from '../../utils/formating';
+import { setProducts } from '../../state/actions/checkout';
 
 const CartSummary = () => {
+    const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart);
     let { total, itemCount } = cart;
     const navigate = useNavigate();
-    // function to add commas to the total amount
-    total = total.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    total = formatPrice(total);
+
+    const handleCheckout = (e) => {
+        e.preventDefault();
+        // ADD Products to Order
+        dispatch(setProducts(cart.items));
+        navigate(routeNames.CHECKOUT);
+    }
+
     return (
         <div>
             {/* Sticky order summary for mobile */}
@@ -17,14 +27,12 @@ const CartSummary = () => {
                     Summary
                 </h2>
                 <p className='text-gray-500'>
-                    Total Amount: ₹ {total}
+                    Total Amount: {total}
                 </p>
                 {/* Add "Order Now" button or any other checkout functionality */}
                 <button
                     className='bg-blue-500 text-white px-4 py-2 mt-2 rounded-md hover:bg-blue-600 w-full'
-                    onClick={() => {
-                        // Handle the order submission or redirection to checkout
-                    }}
+                    onClick={handleCheckout}
                 >
                     Proceed to Buy ({itemCount} {itemCount > 1 ? 'items' : 'item'})
                 </button>
@@ -37,15 +45,12 @@ const CartSummary = () => {
                         Summary
                     </h2>
                     <p className='text-gray-500'>
-                        Total Amount: ₹ {total}
+                        Total Amount: {total}
                     </p>
                     {/* Add "Order Now" button or any other checkout functionality */}
                     <button
                         className='bg-blue-500 max-w-full text-white px-4 py-2 mt-2 rounded-md hover:bg-blue-600 '
-                        onClick={() => {
-                            // Handle the order submission or redirection to checkout
-                            navigate(routeNames.PAYMENT_PAGE);
-                        }}
+                        onClick={handleCheckout}
                     >
                         Proceed to Buy ({itemCount} {itemCount > 1 ? 'items' : 'item'})
                     </button>

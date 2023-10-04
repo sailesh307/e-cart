@@ -16,7 +16,7 @@ const SelectionBox = ({name, list, activeList, setter }) => {
         <div className="">
             <RadioGroup value={value} onChange={handleChange} className="mt-4">
                 <RadioGroup.Label className="text-sm font-medium text-gray-900"> {name} </RadioGroup.Label>
-                <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
+                <div className="gap-4 flex flex-wrap">
                     {list.map((listItem) => (
                         <RadioGroup.Option
                             key={listItem}
@@ -28,7 +28,7 @@ const SelectionBox = ({name, list, activeList, setter }) => {
                                         ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
                                         : 'cursor-not-allowed bg-gray-50 text-gray-400',
                                     active ? 'ring-2 ring-indigo-500' : '',
-                                    'group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6'
+                                    'group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none'
                                 )
                             }
                         >

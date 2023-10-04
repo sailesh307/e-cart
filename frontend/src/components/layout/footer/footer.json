@@ -1,0 +1,106 @@
+[
+    {
+        "menu": "Get to Know",
+        "redirect": "/about",
+        "suboption": [
+            {
+                "title": "About Us",
+                "redirect": "#"
+            },
+            {
+                "title": "Careers",
+                "redirect": "#"
+            },
+            {
+                "title": "Press Releases",
+                "redirect": "#"
+            },
+            {
+                "title": "Become Seller",
+                "redirect": "/signup"
+            }
+        ]
+    },
+    {
+        "menu": "Help",
+        "redirect": "/help",
+        "suboption": [
+            {
+                "title": "Payments",
+                "redirect": "#"
+            },
+            {
+                "title": "Shipping",
+                "redirect": "#"
+            },
+            {
+                "title": "Cancellations & Returns",
+                "redirect": "#"
+            },
+            {
+                "title": "FAQ",
+                "redirect": "#"
+            },
+            {
+                "title": "Report Infringement",
+                "redirect": "#"
+            }
+        ]
+    },
+    {
+        "menu": "Policy",
+        "redirect": "/policy",
+        "suboption": [
+            {
+                "title": "Return Policy",
+                "redirect": "#"
+            },
+            {
+                "title": "Terms of Use",
+                "redirect": "#"
+            },
+            {
+                "title": "Security",
+                "redirect": "#"
+            },
+            {
+                "title": "Privacy",
+                "redirect": "#"
+            },
+            {
+                "title": "Sitemap",
+                "redirect": "#"
+            },
+            {
+                "title": "EPR Compliance",
+                "redirect": "#"
+            }
+        ]
+    },
+    {
+        "menu": "Social",
+        "redirect": "/social",
+        "suboption": [
+            {
+                "title": "Facebook",
+                "redirect": "#"
+            },
+            {
+                "title": "Twitter",
+                "redirect": "#"
+            },
+            {
+                "title": "YouTube",
+                "redirect": "#"
+            },
+            {
+                "title": "Instagram",
+                "redirect": "#"
+            },
+            {
+                "title": "LinkedIn",
+                "redirect": "#"
+            }
+        ]
+    }
+]
