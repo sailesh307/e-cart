@@ -8,9 +8,12 @@ const app = express();
 
 // Load environment variables from a .env file if needed
 dotenv.config();
-
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+};
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Connect to MongoDB using mongoose
