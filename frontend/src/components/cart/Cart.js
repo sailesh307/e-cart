@@ -3,6 +3,7 @@ import CartSummary from './CartSummary';
 import ShowCartItems from './ShowCartItems';
 import { useNavigate } from 'react-router-dom';
 import routeNames from '../../constants/routeNames';
+import { Button } from '@material-tailwind/react';
 
 export default function Cart() {
     // if there is no cart, show this message
@@ -17,16 +18,16 @@ export default function Cart() {
                         <div className='text-center' >
                             <h1 className='text-3xl font-semibold mb-2' > Your cart is empty </h1>
                             <p className='text-gray-500 mb-2' > Looks like you haven 't added any items to the cart yet </p>
-                            <button onClick={() => {
+                            <Button onClick={() => {
                                 navigate(routeNames.HOME)
                             }}
-                                className='bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600' > Browse Products </button>
+                            > Browse Products </Button>
                         </div>
                     </div>
                 ) :
-                    (<div className='flex flex-col md:flex-row h-screen'>
+                    (<div className='flex flex-col md:flex-row'>
                         {/* Show items */}
-                        <div className='md:w-2/3 mb-40'>
+                        <div className='md:w-2/3 '>
                             <ShowCartItems />
                         </div>
 

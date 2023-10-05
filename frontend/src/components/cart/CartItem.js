@@ -4,9 +4,10 @@ import { useDispatch } from "react-redux";
 import { changeProductQuantity, removeProductFromCart } from "../../state/actions/cartActions";
 import { formatPrice } from "../../utils/formating";
 import { enqueueSnackbar } from "notistack";
+import { Button, Card } from "@material-tailwind/react";
 
 const CartItem = ({ item }) => {
-    let { _id, productId, variantId, name, price, color, quantity, image } = item;
+    let { _id, productId, variantId, name, price, color, quantity, image, size } = item;
     price = formatPrice(price);
     const dispatch = useDispatch();
 
@@ -21,24 +22,37 @@ const CartItem = ({ item }) => {
     };
 
     return (
-        <div className="flex py-6 sm:py-4 px-3">
-            <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+        <Card className="flex flex-row py-6 sm:py-4 px-3 m-1 bg-blue-gray-50/50">
+            <Link
+                to={`${routeNames.PRODUCT_OVERVIEW}?pid=${productId}`}
+                className="h-24 w-24 md:h-32 md:w-32 lg:h-52 lg:w-52 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                 <img
                     src={image}
                     alt={name}
                     className="h-full w-full object-scale-down object-center"
                 />
-            </div>
+            </Link>
 
             <div className="ml-4 flex flex-1 flex-col">
                 <div>
                     <div className="flex justify-between text-base font-medium text-gray-900">
                         <h3>
-                            <Link to={`${routeNames.PRODUCT_OVERVIEW}/${productId}`}>{name}</Link>
+                            <Link
+                                to={`${routeNames.PRODUCT_OVERVIEW}?pid=${productId}`}
+                                className="line-clamp-2"
+                            >
+                                {name}
+                            </Link>
                         </h3>
                         <p className="ml-4"> {price}</p>
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">{color}</p>
+                    <p className="mt-1 text-sm text-green-500">In stock</p>
+                    <p className="mt-1 text-sm text-gray-700">Eligible for FREE shipping</p>
+                    {/* If color */}
+                    {color && <p className="mt-1 text-sm"><strong>Colour: </strong>{color}</p>}
+                    {/* If size */}
+                    { size && <p className="mt-1 text-sm"><strong>Size: </strong>{size}</p>}
+                    
                 </div>
                 <div className="flex flex-1 items-end justify-between text-sm">
                     <p className="text-gray-500 mr-2">Qty
@@ -46,7 +60,7 @@ const CartItem = ({ item }) => {
                             id={`quantity-${_id}`}
                             value={quantity}
                             onChange={handleQuantityChange}
-                            className="ml-1 py-1 border rounded border-gray-300 focus:outline-none focus:ring focus:ring-indigo-400"
+                            className="ml-1 py-1 border rounded border-gray-300 focus:outline-none "
                         >
                             {
                                 [...Array(10)].map((_, index) => (
@@ -59,17 +73,19 @@ const CartItem = ({ item }) => {
                     </p>
 
                     <div className="flex">
-                        <button
+                        <Button
+                            color="red"
+                            variant="outlined"
                             onClick={handleRemoveFromCart}
                             type="button"
-                            className="font-medium text-indigo-600 hover:text-indigo-500"
+                            className="font-medium p-1.5 capitalize"
                         >
-                            Remove
-                        </button>
+                            Delete
+                        </Button>
                     </div>
                 </div>
             </div>
-        </div>
+        </Card>
     );
 };
 
