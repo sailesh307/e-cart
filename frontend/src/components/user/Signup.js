@@ -1,33 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { FaUser, FaEnvelope, FaLock, FaUserPlus, FaEye, FaEyeSlash } from 'react-icons/fa'; // Import icons from react-icons
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import routeNames from '../../constants/routeNames';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearErrors, signupUser } from '../../state/actions/userActions';
-import { Spinner } from '@material-tailwind/react';
+import { Card, Input, Checkbox, Button, Typography, Spinner, Tab, Tabs, TabsHeader } from '@material-tailwind/react';
 import { enqueueSnackbar } from 'notistack';
 
 const Signup = () => {
-    const { loading, error } = useSelector((state) => state.user);
-    // 
+    const { loading, error, user } = useSelector(state => state.user);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    ///////// ui
     const [formData, setFormData] = useState({
-        username: 'vision',
-        email: 'vision@gmail.com',
-        password: '123456',
-        cpassword: '123456',
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
         role: 'customer',
     });
 
-    const [passwordVisible, setPasswordVisible] = useState({
-        password: false,
-        cpassword: false,
-    });
+    const [passwordVisible, setPasswordVisible] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
+    }
+
+    const handleRoleChange = (role) => {
+        setFormData({ ...formData, role })
+    }
 
     const handleChange = (e) => {
+        if (e.target.type === 'checkbox') {
+            togglePasswordVisibility()
+            return;
+        }
         const { name, value } = e.target;
         setFormData({
             ...formData,
@@ -37,162 +44,74 @@ const Signup = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        // check if password and confirm password are same
-        if (formData.password !== formData.cpassword) {
-            enqueueSnackbar('Password and Confirm Password do not match', { variant: 'error' });
-            return;
-        }
-        dispatch(signupUser(formData.username, formData.email, formData.password, formData.role));
-        if (localStorage.getItem('token')) {
-            enqueueSnackbar('Signup Successful', { variant: 'success' });
-            navigate(routeNames.HOME);
-        }
+        dispatch(signupUser(formData));
     };
 
     useEffect(() => {
+        if (user) {
+            enqueueSnackbar('Signup Successful', { variant: 'success' });
+            if (user.role !== 'admin') {
+                navigate(routeNames.HOME);
+            } else {
+                navigate(routeNames.ADMIN_DASHBOARD);
+            }
+        }
         if (error) {
             enqueueSnackbar(error, { variant: 'error' });
             dispatch(clearErrors());
         }
-    }, [dispatch, error]);
+    }, [error, user, dispatch, navigate]);
 
     return (
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <img
-                    className="mx-auto h-10 w-auto"
-                    src="./logo192.png"
-                    alt="Your Company"
-                />
-                <h2 className="mt-10 mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                    Sign in to your account
-                </h2>
-            </div>
-
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <form onSubmit={handleSignup} className="space-y-6" autoComplete='false'>
-                    <div>
-                        <div className="mt-4 flex items-center">
-                            <FaUser className="text-gray-500 mr-2" />
-                            <label htmlFor="username" className="block text-gray-700">Username</label>
-                        </div>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
-                            required
-                        />
+        <div className='flex flex-1 min-h-full justify-center py-12'>
+            <Card color="transparent" shadow={false}>
+                <Typography variant="h4" color="blue-gray">
+                    Sign Up
+                </Typography>
+                <Typography color="gray" className="mt-1 font-normal">
+                    Enter your details to register.
+                </Typography>
+                <form
+                    onSubmit={handleSignup}
+                    onChange={handleChange}
+                    className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96"
+                >
+                    <div className="mb-4 flex flex-col gap-6">
+                        <Input required size="lg" label="First Name" name='firstName' />
+                        <Input required size="lg" label="Last Name" name='lastName' />
+                        <Input required type='email' size="lg" label="Email" name='email' />
+                        <Input required type={!passwordVisible ? "password" : 'text'} size="lg" label="Password" name='password' />
+                        {/* select role */}
+                        <Tabs value="customer">
+                            <TabsHeader className='bg-gray-300'>
+                                <Tab value='customer' onClick={() => handleRoleChange('customer')}>Customer</Tab>
+                                <Tab value='seller' onClick={() => handleRoleChange('seller')}>Seller</Tab>
+                            </TabsHeader>
+                        </Tabs>
                     </div>
-                    <div>
-                        <div className="mt-4 flex items-center">
-                            <FaEnvelope className="text-gray-500 mr-2" />
-                            <label htmlFor="email" className="block text-gray-700">Email</label>
-                        </div>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <div className="mt-4 flex items-center">
-                            <FaLock className="text-gray-500 mr-2" />
-                            <label htmlFor="password" className="block text-gray-700">Password</label>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <input
-                                type={passwordVisible.password ? 'text' : 'password'}
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setPasswordVisible({
-                                        ...passwordVisible,
-                                        password: !passwordVisible.password,
-                                    });
-                                }}
-                                className="text-gray-500 ml-2 focus:outline-none"
+                    <Checkbox
+                        label={
+                            <Typography
+                                variant="small"
+                                color="gray"
+                                className="font-normal"
                             >
-                                {passwordVisible.password ? <FaEyeSlash /> : <FaEye />}
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <div className="mt-4 flex items-center">
-                            <FaLock className="text-gray-500 mr-2" />
-                            <label htmlFor="cpassword" className="block text-gray-700">Confirm Password</label>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <input
-                                type={passwordVisible.cpassword ? 'text' : 'password'}
-                                id="cpassword"
-                                name="cpassword"
-                                value={formData.cpassword}
-                                onChange={handleChange}
-                                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setPasswordVisible({
-                                        ...passwordVisible,
-                                        cpassword: !passwordVisible.cpassword,
-                                    });
-                                }}
-                                className="text-gray-500 ml-2 focus:outline-none"
-                            >
-                                {passwordVisible.cpassword ? <FaEyeSlash /> : <FaEye />}
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <div className="mt-4 flex items-center">
-                            <FaUserPlus className="text-gray-500 mr-2" />
-                            <label htmlFor="role" className="block text-gray-700">Role</label>
-                        </div>
-                        <select
-                            id="role"
-                            name="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
-                            required
-                        >
-                            <option value="customer">Customer</option>
-                            <option value="seller">Seller</option>
-                        </select>
-                    </div>
-                    <div>
-                        <button
-                            type="submit"
-                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            {loading ? <Spinner /> : 'Sign Up'}
-                        </button>
-                    </div>
+                                Show password
+                            </Typography>
+                        }
+                        containerProps={{ className: "-ml-2.5" }}
+                    />
+                    <Button type='submit' fullWidth className="mt-6 flex items-center justify-center" >
+                        {loading ? <Spinner  /> : 'Sign Up'}
+                    </Button>
+                    <Typography color="gray" className="mt-4 text-center font-normal">
+                        Already have an account?{" "}
+                        <Link to={routeNames.SIGNIN} className="font-medium text-gray-900">
+                            Sign In
+                        </Link>
+                    </Typography>
                 </form>
-                <p className="mt-10 text-center text-sm text-gray-500">
-                    Already have an account?{' '}
-                    <Link to={routeNames.SIGNIN} className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-                        Sign in
-                    </Link>
-                </p>
-            </div>
+            </Card>
         </div>
     );
 };
