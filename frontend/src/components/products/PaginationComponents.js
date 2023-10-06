@@ -1,56 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Button, IconButton } from "@material-tailwind/react";
+import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 
-const PaginationComponent = ({ onPrevClick, currPage, onNextClick }) => {
+const PaginationComponent = ({ pageCount = 1, handler = () => { } }) => {
+    const [active, setActive] = useState(1);
+    const getItemProps = (index) => ({
+        variant: active === index ? "filled" : "text",
+        color: "gray",
+        onClick: () => {
+            handler(index)
+            setActive(index)
+        },
+    });
+
+    const next = () => {
+        if (active === pageCount) return;
+        handler(active + 1);
+        setActive(active + 1);
+    };
+
+    const prev = () => {
+        if (active === 1) return;
+        handler(active - 1)
+        setActive(active - 1);
+    };
+
+    const renderPageButtons = () => {
+        const maxButtonCount = 5;
+        const buttons = [];
+        const start = Math.max(1, active - Math.floor(maxButtonCount / 2));
+        const end = Math.min(pageCount, start + maxButtonCount - 1);
+        for (let i = start; i <= end; i++) {
+            buttons.push(
+                <IconButton clas key={i} {...getItemProps(i)}>
+                    {i}
+                </IconButton>
+            );
+        }
+        return buttons;
+    };
+
     return (
-        <div className="inline-flex mt-2 xs:mt-0">
-            {/* Prev Button */}
-            <button
-                className="flex items-center justify-center px-4 h-10 text-base font-medium bg-primary text-black rounded-l hover:bg-primary-light"
-                onClick={onPrevClick}
+        <div className="flex items-center gap-1 md:gap-4">
+            <Button
+                variant="text"
+                className="flex items-center gap-1"
+                onClick={prev}
+                disabled={active === 1}
             >
-                <svg
-                    className="w-4 h-4 mr-2"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 10"
-                >
-                    <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 5H1m0 0 4 4M1 5l4-4"
-                    />
-                </svg>
-                Prev
-            </button>
-            {/* show page number */}
-            <div className="flex items-center justify-center h-10 mx-1 px-2 font-medium text-black">
-                {currPage}
+                <ArrowBackIos/>
+                <span className='hidden md:block'>Prev</span>
+            </Button>
+            <div className="flex items-center gap-1">
+                {renderPageButtons()}
             </div>
-            {/* Next Button */}
-            <button
-                className="flex items-center justify-center px-4 h-10 text-base font-medium bg-primary text-black rounded-r hover:bg-primary-light"
-                onClick={onNextClick}
+            <Button
+                variant="text"
+                className="flex items-center gap-1"
+                onClick={next}
+                disabled={active === pageCount}
             >
-                Next
-                <svg
-                    className="w-4 h-4 ml-2"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 10"
-                >
-                    <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M1 5h12m0 0L9 1m4 4L9 9"
-                    />
-                </svg>
-            </button>
+                <span className='hidden md:block'>Next</span>
+                <ArrowForwardIos />
+            </Button>
         </div>
     );
 }
