@@ -7,7 +7,6 @@ import {
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from 'react-redux';
 import { AdminGetUsers } from '../../state/actions/userActions';
-import { Delete, Update } from '@mui/icons-material';
 import {
     Card,
     CardHeader,
@@ -53,6 +52,7 @@ const UsersList = () => {
     }
 
     const handleSearch = () => {
+        // TODO: search feature
     }
 
     const TABLE_ROWS = users?.map((user) => {
@@ -109,7 +109,7 @@ const UsersList = () => {
                     <div className="w-full md:w-72">
                         <Input
                             label="Search"
-                            icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+                            icon={<MagnifyingGlassIcon onClick={handleSearch} className="h-5 w-5" />}
                         />
                     </div>
                 </div>

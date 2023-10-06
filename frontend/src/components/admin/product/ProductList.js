@@ -4,7 +4,7 @@ import {
     MagnifyingGlassIcon,
     ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { PencilIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -27,7 +27,6 @@ import { fetchSellerProducts } from '../../../state/actions/productActions';
 import { useNavigate } from 'react-router-dom';
 import routeNames from '../../../constants/routeNames';
 import { formatRatingCount } from '../../../utils/formating';
-import { Add } from '@mui/icons-material';
 import Loader from '../../layout/loader/Loader';
 import { enqueueSnackbar } from 'notistack';
 

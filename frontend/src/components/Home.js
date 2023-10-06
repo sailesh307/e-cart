@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import routeNames from "../constants/routeNames";
-import { Card, Carousel, Typography, CardHeader, CardBody, CardFooter, Tooltip, Avatar } from "@material-tailwind/react";
+import { Carousel } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 
 const images1 = [
@@ -105,21 +105,6 @@ const categories = [
   },
 ]
 
-const delivery = [
-  {
-    title: 'Wide Selection',
-    image: ''
-  },
-  {
-    title: 'Pay On Delivery',
-    image: ''
-  },
-  {
-    title: 'Easy Returns',
-    image: ''
-  }
-]
-
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
@@ -172,7 +157,7 @@ const Home = () => {
         transition={{
           type: "spring",
         }}
-        className="shadow-xl"
+        className="shadow-xl z-0"
       >
         {
           images.map((image, index) => (
