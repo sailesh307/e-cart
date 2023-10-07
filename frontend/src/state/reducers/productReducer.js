@@ -28,7 +28,7 @@ const initialProductsState = {
     error: null,
     sortOption: null,
     query: "",
-    page: 1,
+    currentPage: 1,
     totalPages: 1,
 };
 
@@ -37,7 +37,16 @@ export const productsReducer = (state = initialProductsState, action) => {
         case FETCH_PRODUCTS_REQUEST:
             return { ...state, products: [], loading: true };
         case FETCH_PRODUCTS_SUCCESS:
-            return { ...state, loading: false, products: action.payload };
+            const { products, totalProducts, currentPage, totalPages } = action.payload;
+            
+            return {
+                ...state,
+                loading: false,
+                products,
+                totalProducts,
+                currentPage,
+                totalPages,
+            };
         case FETCH_PRODUCTS_FAILURE:
             return { ...state, loading: false, error: action.payload };
         //// FETCH A PRODUCT ///////////////////////

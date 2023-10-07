@@ -57,11 +57,11 @@ export const setPagination = (page) => ({
     payload: page,
 });
 
-// Async action to fetch all products
-export const fetchProducts = () => {
+// fetch products on search and page change
+export const fetchProducts = (page = 1) => {
     return async (dispatch, getState) => {
         const state = getState();
-        const { sortOption, query, page } = state.allProducts;
+        const { sortOption, query } = state.allProducts;
 
         const sortOptionString = sortOption ? `&sort=${sortOption}` : '';
         // make sure the query is a string value

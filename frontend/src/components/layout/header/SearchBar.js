@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom';
 import routeNames from '../../../constants/routeNames';
-import { fetchProducts, setSearchQuery } from '../../../state/actions/productActions';
 import { Input, Button } from '@material-tailwind/react';
 import { SearchOutlined } from '@mui/icons-material';
 
@@ -10,9 +8,10 @@ const SearchBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const dispatch = useDispatch();
+  const queryParams = new URLSearchParams(location.search);
+  const searchQuery = queryParams.get('q');
 
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState(searchQuery);
 
   const handleChange = ({ target }) => {
     setKeyword(target.value);
@@ -22,8 +21,6 @@ const SearchBar = () => {
     e.preventDefault();
     console.log(keyword);
     navigate(routeNames.SEARCH + '?q=' + keyword);
-    dispatch(setSearchQuery(keyword));
-    dispatch(fetchProducts());
   };
 
   useEffect(() => {

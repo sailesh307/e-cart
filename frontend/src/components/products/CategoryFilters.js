@@ -1,11 +1,10 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Bars3Icon, ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import ProductPage from './ProductPage'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchProducts, setPagination, setSortOption } from '../../state/actions/productActions'
-import PaginationComponent from './PaginationComponents'
+import { useDispatch } from 'react-redux'
+import { fetchProducts, setSortOption } from '../../state/actions/productActions'
 
 const sortOptions = [
     { id: 'newest', name: 'Newest'},
@@ -65,8 +64,6 @@ function classNames(...classes) {
 
 export default function Filters() {
     const dispatch = useDispatch();
-    const state = useSelector((state) => state.allProducts);
-    const { page } = state;
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
     const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0])
@@ -82,24 +79,6 @@ export default function Filters() {
     const handleGridView = () => {
         setGridView(!gridView);        
     }
-
-    const [currentPage, setCurrentPage] = useState(page);
-
-    const nextPage = () => {
-        dispatch(setPagination(currentPage + 1));
-        setCurrentPage(currentPage + 1);
-        dispatch(fetchProducts());
-    }
-
-    const prevPage = () => {
-        dispatch(setPagination(currentPage - 1));
-        setCurrentPage(currentPage - 1);
-        dispatch(fetchProducts());
-    }
-
-    useEffect(() => {
-        setCurrentPage(page);
-    }, [page, dispatch]);
 
     return (
         <div className="bg-white">
@@ -333,13 +312,8 @@ export default function Filters() {
                             </form>
 
                             {/* Product grid */}
-                            <div className="lg:col-span-4 flex flex-col items-center">
+                            <div className="lg:col-span-4">
                                 <ProductPage gridView={gridView} />
-                                <PaginationComponent
-                                    onPrevClick={prevPage}
-                                    currPage={currentPage}
-                                    onNextClick={nextPage}
-                                />
                             </div>
                         </div>
                     </section>
