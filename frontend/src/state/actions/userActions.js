@@ -34,13 +34,11 @@ export const clearErrors = () => ({
 
 // Async action to log in a user
 export const loginUser = (email, password) => {
-    console.log(process.env.REACT_APP_BACKEND_URL)
     return async (dispatch) => {
         try {
             dispatch(authRequest());
             const response = await Axios.post(API_URLS.LOGIN, { email, password });
             const { user, token } = response.data; // Extract the user and token from the response
-            console.log(user, token);
             // Save the token and user in local storage
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
@@ -86,19 +84,17 @@ export const logoutUser = () => async (dispatch) => {
 };
 
 // Async action to sign up a user
-export const signupUser = (username, email, password, role) => {
+export const signupUser = (formData) => {
     return async (dispatch) => {
         try {
             dispatch(authRequest());
-            const response = await Axios.post(API_URLS.SIGNUP, { username, email, password, role });
+            const response = await Axios.post(API_URLS.SIGNUP, formData);
             const { user, token } = response.data; // Extract the user and token from the response
-            console.log(user, token);
             // Save the token and user in local storage
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
             // Dispatch the success action
-            dispatch(authSuccess(user, token));
-            console.log('Signed up');
+            dispatch(authSuccess(user, token))
             dispatch(setCart());
         } catch (error) {
             if (error.response) {
@@ -130,15 +126,17 @@ export const AdminGetUsers = () => {
             dispatch({
                 type: GET_USERS_REQUEST,
             });
-            const response = await Axios.get(API_URLS.ADMIN_GET_USERS);
+            const response = await Axios.get(API_URLS.ADMIN_GET_USERS, {
+                headers: {
+                    'x-auth-token': localStorage.getItem('token'),
+                },
+            });
             const { users } = response.data; // Extract the user and token from the response
-            console.log(users);
             // Dispatch the success action
             dispatch({
                 type: GET_USERS_SUCCESS,
                 payload: users,
             });
-            console.log('users fetched');
         } catch (error) {
             dispatch({
                 type: GET_USERS_FAILURE,

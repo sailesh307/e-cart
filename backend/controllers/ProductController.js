@@ -35,9 +35,10 @@ exports.getProductById = async (req, res) => {
 exports.updateProductById = async (req, res) => {
     try {
         // check if thhere is any variant data
-        if (!req.body.variant.variantData.length > 0) {
-            return res.status(400).json({ message: 'Product must have at least one variant' });
-        }
+        // TODO: 
+        // if (!req.body.variant.variantData.length > 0) {
+        //     return res.status(400).json({ message: 'Product must have at least one variant' });
+        // }
 
         const updatedProduct = await Product.findByIdAndUpdate(
             {_id: req.params.productId},
@@ -70,11 +71,11 @@ exports.deleteProductById = async (req, res) => {
 // Search products by category name or product name
 exports.searchProducts = async (req, res) => {
     try {
-        let { query, sort = null, limit = 5, page = 1 } = req.query; // Get the search query from the request query parameters
+        let { query, sort = null, limit = 10, page = 1 } = req.query; // Get the search query from the request query parameters
         if (page < 1) {
             page = 1;
         }
-        console.log(query, sort, limit, page);
+        
         // decode the sort query parameter
         let sortObject;
         switch (sort) {
@@ -93,75 +94,41 @@ exports.searchProducts = async (req, res) => {
             default:
                 sortObject = { createdAt: -1 };
         }
-        console.log(sortObject);
+        
         const skipCount = (page - 1) * limit; // Calculate the number of documents to skip based on page and limit
-        // if query is empty, return all products
-        // Use Mongoose to search for products by category name or product name
 
-        const pipeline = [
-            {
-                $match: query ? {
-                    $or: [
-                        { category: { $regex: query, $options: 'i' } }, // Case-insensitive search for category name
-                        { name: { $regex: query, $options: 'i' } }, // Case-insensitive search for product name
-                    ],
-                } : {},
-            },
-            {
-                $unwind: "$variant.variantData", // Unwind the variant array
-            },
-            {
-                $group: {
-                    _id: "$_id",
-                    name: { $first: "$name" },
-                    sellerId: { $first: "$sellerId" },
-                    rating: { $first: "$rating" },
-                    ratingCount: { $first: "$ratingCount" },
-                    thumbnail: { $first: { $cond: { if: { $ne: ["$variant.variantData.images", []] }, then: { $arrayElemAt: ["$variant.variantData.images", 0] }, else: { $arrayElemAt: ["$commonImages", 0] } } } },
-                    price: { $min: "$variant.variantData.price" },
-                    extra: {
-                        $first: {
-                            $concat: [
-                                {
-                                    $cond: {
-                                        if: { $ne: ["$variant.variantData.size", null] },
-                                        then: { $toString: "$variant.variantData.size" },
-                                        else: ""
-                                    }
-                                },
-                                " | ",
-                                {
-                                    $cond: {
-                                        if: { $ne: ["$variant.variantData.color", null] },
-                                        then: { $toString: "$variant.variantData.color" },
-                                        else: ""
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    variantId: { $first: "$variant.variantData._id" },
-                },
-            }
-        ];
+        const matchStage = query ? {
+            $or: [
+                { category: { $regex: query, $options: 'i' } },
+                { name: { $regex: query, $options: 'i' } },
+                { keywords: { $in: [query] } }
+            ],
+        } : {};
 
-        const products = await Product.aggregate(pipeline).sort(sortObject).skip(skipCount).limit(limit);
-        console.log(
-            products.map((product) => product.name)
-        )
-        res.json(products);
+        const products = await Product.find(matchStage).sort(sortObject).skip(skipCount).limit(limit);
+        
+
+        const totalProducts = await Product.countDocuments(matchStage);
+
+        const response = {
+            products,
+            totalProducts,
+            currentPage: parseInt(page),
+            limit,
+            totalPages: Math.ceil(totalProducts / limit),
+        };
+        res.json(response);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to search for products' });
     }
 };
 
-
 // Get all products of a seller
 exports.getProductsBySeller = async (req, res) => {
     try {
         const { page = 1 } = req.query;
-        console.log('page',page);
+        
         if(page < 1) return res.status(400).json({ message: 'Invalid page number' });
         const pageSize = 10;
         // if admin is requesting, return all products

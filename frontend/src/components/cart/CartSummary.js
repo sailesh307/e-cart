@@ -1,16 +1,16 @@
-import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import routeNames from '../../constants/routeNames';
 import { formatPrice } from '../../utils/formating';
 import { setProducts } from '../../state/actions/checkout';
+import { Button, Card, Typography } from '@material-tailwind/react';
 
 const CartSummary = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart);
-    let { total, itemCount } = cart;
+    let { subTotal, shippingFee, itemCount } = cart;
     const navigate = useNavigate();
-    total = formatPrice(total);
+    subTotal = formatPrice(subTotal);
 
     const handleCheckout = (e) => {
         e.preventDefault();
@@ -21,42 +21,21 @@ const CartSummary = () => {
 
     return (
         <div>
-            {/* Sticky order summary for mobile */}
-            <div className='md:hidden fixed bottom-0 left-0 w-full bg-white p-4'>
-                <h2 className='text-lg font-semibold mb-2'>
-                    Summary
-                </h2>
-                <p className='text-gray-500'>
-                    Total Amount: {total}
-                </p>
+            <Card className='static bottom-0 md:top-0 w-full p-4 m-2'>
+                <Typography variant='small'>
+                    Shipping Fee: {shippingFee}
+                </Typography>
+                <Typography variant='lead'>
+                    Subtotal: {subTotal}
+                </Typography>
                 {/* Add "Order Now" button or any other checkout functionality */}
-                <button
-                    className='bg-blue-500 text-white px-4 py-2 mt-2 rounded-md hover:bg-blue-600 w-full'
+                <Button
+                    className='w-full md:w-auto'
                     onClick={handleCheckout}
                 >
                     Proceed to Buy ({itemCount} {itemCount > 1 ? 'items' : 'item'})
-                </button>
-            </div>
-
-            {/* Desktop devices */}
-            <div className='fixed hidden md:block'>
-                <div className='bg-white p-4'>
-                    <h2 className='text-lg font-semibold mb-2'>
-                        Summary
-                    </h2>
-                    <p className='text-gray-500'>
-                        Total Amount: {total}
-                    </p>
-                    {/* Add "Order Now" button or any other checkout functionality */}
-                    <button
-                        className='bg-blue-500 max-w-full text-white px-4 py-2 mt-2 rounded-md hover:bg-blue-600 '
-                        onClick={handleCheckout}
-                    >
-                        Proceed to Buy ({itemCount} {itemCount > 1 ? 'items' : 'item'})
-                    </button>
-
-                </div>
-            </div>
+                </Button>
+            </Card>
         </div>
     )
 }

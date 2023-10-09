@@ -3,7 +3,16 @@ const mongoose = require('mongoose');
 const variantSchema = new mongoose.Schema({
     color: String,
     size: String,
-    price: Number,
+    price: {
+        type: {
+            mrp: Number,
+            selling: Number,
+        }
+    },
+    stock: {
+        type: Number,
+        default: 0,
+    },
     images: [String],
 });
 
@@ -13,42 +22,43 @@ const productSchema = new mongoose.Schema({
         ref: 'users',
         required: true,
     },
+    keywords: [],
     category: {
         type: String,
-        enum: ['phone', 'clothing', 'electronics'],
         required: true,
     },
+    subCategory: String,
     name: {
         type: String,
         required: true,
     },
-    description: String,
     brand: String,
-    details: [String],
-    highlights: [String],
-    commonImages: {
-        type: [String],
-        required: true,
-        validate: {
-            validator: (images) => images.length > 0,
-            message: 'Product must have at least one common image',
+    price: {
+        type: {
+            mrp: Number,
+            selling: Number,
         }
     },
+    stock: {
+        type: Number,
+        default: 0,
+    },
+    highlights: {
+        type: [String],
+        default: null,
+    },
+    about: {
+        type: [String],
+        default: null,
+    },
+    shippingFee: {
+        type: Number,
+        default: 0,
+    },
+    images: [String],
     variant: {
-        type: {
-            allColors: [String],
-            allSizes: [String],
-            variantData: {
-                type: [variantSchema],
-                required: true,
-                validate: {
-                    validator: (variants) => variants.length > 0,
-
-                    message: 'Product must have at least one variant',
-                }
-            },
-        },
-        required: true,
+        type: [variantSchema],
+        default: null,
     },
     rating: {
         type: Number,
@@ -74,30 +84,3 @@ productSchema.pre('findOneAndUpdate', function () {
 
 
 module.exports = mongoose.model('Product', productSchema);
-
-
-// sample data
-/* 
-const data = {
-    sellerId: ObjectId,
-    category: String,
-    name: String,
-    description: String,
-    brand: String,
-    details: [String],
-    highlights: [String],
-    commonImages: [String],
-    variant: {
-        allColors: [String],
-        allSizes: [String],
-        variantData: [{
-            color: String,
-            size: String,
-            price: Number,
-            images: [String],
-        }],
-    },
-
-};
-
-*/

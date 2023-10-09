@@ -62,7 +62,6 @@ exports.login = async (req, res) => {
         }
         // Compare the provided password with the stored hashed password
         const passwordMatch = await bcrypt.compare(password, user.password);
-        console.log(passwordMatch);
         // If the passwords don't match, return an error
         if (!passwordMatch) {
             return res.status(400).json({ message: 'Invalid Password' });
@@ -73,7 +72,7 @@ exports.login = async (req, res) => {
         // remove password from user object
         user.password = undefined;
         // Send the token and user object back to the client
-        res.json({ user, token });
+        res.json({ user, token, message: 'User login successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
@@ -85,7 +84,6 @@ exports.profile = async (req, res) => {
     try {
         // Access the user ID from the JWT payload (provided by your auth middleware)
         const userId = req.user.userId;
-        console.log(userId);
 
         // Fetch the user profile from the database based on the user ID
         const user = await User.findById(userId).select('-password');

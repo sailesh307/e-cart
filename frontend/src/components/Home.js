@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import routeNames from "../constants/routeNames";
-import { Card, Carousel, Typography, CardHeader, CardBody, CardFooter, Tooltip, Avatar } from "@material-tailwind/react";
+import { Carousel } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 
 const images1 = [
@@ -66,34 +66,22 @@ const new_arrivals = [
   'https://m.media-amazon.com/images/I/613aWImHVWL._AC_SY200_.jpg',
   'https://m.media-amazon.com/images/I/51Ztc3cuiSL._AC_SY200_.jpg',
   'https://m.media-amazon.com/images/I/51XOdoEk5zL._AC_SY200_.jpg',
-  
+
 
 ]
 
 const categories = [
   {
-    name: 'Grocery',
-    image: 'https://rukminim1.flixcart.com/flap/80/80/image/29327f40e9c4d26b.png?q=100'
-  },
-  {
-    name: 'Mobiles',
+    name: 'Phone',
     image: 'https://rukminim1.flixcart.com/flap/80/80/image/22fddf3c7da4c4f4.png?q=100'
-  },
-  {
-    name: 'Fashion',
-    image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/0d75b34f7d8fbcb3.png?q=100'
   },
   {
     name: 'Electronics',
     image: 'https://rukminim1.flixcart.com/flap/80/80/image/69c6589653afdb9a.png?q=100'
   },
   {
-    name: 'Appliances',
-    image: 'https://rukminim1.flixcart.com/flap/80/80/image/0ff199d1bd27eb98.png?q=100'
-  },
-  {
-    name: 'Home & Furniture',
-    image: 'https://rukminim1.flixcart.com/flap/80/80/image/ab7e2b022a4587dd.jpg?q=100'
+    name: 'Fashion',
+    image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/0d75b34f7d8fbcb3.png?q=100'
   },
   {
     name: 'Appliances',
@@ -103,20 +91,21 @@ const categories = [
     name: 'Home & Furniture',
     image: 'https://rukminim1.flixcart.com/flap/80/80/image/ab7e2b022a4587dd.jpg?q=100'
   },
-]
-
-const delivery = [
   {
-    title: 'Wide Selection',
-    image: ''
+    name: 'Grocery',
+    image: 'https://rukminim1.flixcart.com/flap/80/80/image/29327f40e9c4d26b.png?q=100'
   },
   {
-    title: 'Pay On Delivery',
-    image: ''
+    name: 'Furniture',
+    image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/d47b98754854d054.png?q=100'
   },
   {
-    title: 'Easy Returns',
-    image: ''
+    name: 'Kitchen',
+    image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/92b1f08861995c5f.png?q=100'
+  },
+  {
+    name: 'Fitness',
+    image: 'https://freedomfitness.com/corpus-christi-spid/wp-content/uploads/sites/2/2018/07/boot-camp-classes-best-gym-SPID-tx.jpg'
   }
 ]
 
@@ -146,16 +135,19 @@ const Home = () => {
     };
   }, [screenWidth])
 
+  // handle category redirects
+  const handleCategoryRedirect = (keyword) => {
+    navigate(routeNames.SEARCH + '?q=' + keyword);
+  }
+
   return (
     <div className="bg-blue-gray-100 h-full m-3 space-y-2">
       {/* categories */}
       <div className=' bg-white flex flex-row h-30 gap-3 lg:gap-10 overflow-x-scroll no-scrollbar md:justify-center' >
         {
           categories.map((category, index) => (
-            <button key={index} className="w-20 hover:text-blue-700">
-              <div className="w-20 h-20">
-                <img src={category.image} alt={category.name} />
-              </div>
+            <button onClick={() => handleCategoryRedirect(category.name)} key={index} className="w-20 hover:text-blue-700">
+              <img src={category.image} alt={category.name} className="w-20 h-20 rounded-lg" />
               <p className="text-center text-sm">
                 {category.name}
               </p>
@@ -172,7 +164,7 @@ const Home = () => {
         transition={{
           type: "spring",
         }}
-        className="shadow-xl"
+        className="shadow-xl z-0"
       >
         {
           images.map((image, index) => (

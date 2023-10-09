@@ -5,13 +5,12 @@ import Slider from 'react-slick';
 const DisplayImages = ({ images }) => {
     const settings = {
         dots: true,
-        infinite: false,
+        infinite: true,
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
         centerMode: true,
-        centerPadding: '0',
-        
+        centerPadding: '0',  
     };
 
     return (

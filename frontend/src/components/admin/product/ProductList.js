@@ -4,7 +4,7 @@ import {
     MagnifyingGlassIcon,
     ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { PencilIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -26,8 +26,7 @@ import {
 import { fetchSellerProducts } from '../../../state/actions/productActions';
 import { useNavigate } from 'react-router-dom';
 import routeNames from '../../../constants/routeNames';
-import { formatRatingCount } from '../../../utils/formating';
-import { Add } from '@mui/icons-material';
+import { formatPrice, formatRatingCount } from '../../../utils/formating';
 import Loader from '../../layout/loader/Loader';
 import { enqueueSnackbar } from 'notistack';
 
@@ -46,7 +45,7 @@ const TABS = [
     },
 ];
 
-const TABLE_HEAD = ["Product", "Category", "Variants", "Rating", "Rating Count", "Status", "Created On", "Updated On", ""];
+const TABLE_HEAD = ["Product", "Category", "MRP", "SP", "Variants", "Rating", "Rating Count", "Status", "Created On", "Updated On", ""];
 
 const ProductList = () => {
     const { loading, error, products, totalPages, currentPage, totalProducts } = useSelector(state => state.sellerProducts)
@@ -91,12 +90,13 @@ const ProductList = () => {
             category: product.category,
             brand: product.brand,
             seller: product.seller,
-            variants: product.variant.variantData.length,
+            mrp: product.price.mrp,
+            sellingPrice: product.price.selling,
+            variants: product?.variant?.length ?? 1,
             rating: product.rating,
             ratingCount: product.ratingCount,
-            img: product?.commonImages[0] ?? 'https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg',
-            // asign online randomly
-            inStock: product.inStock || true,
+            img: product?.images[0],
+            inStock: product.stock,
             // date in dd/mm/yyyy and time in hh:mm with local time zone
             createdOn: new Date(product.createdAt).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }),
             updatedOn: product.updatedAt ? new Date(product.updatedAt).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) : '',
@@ -182,7 +182,7 @@ const ProductList = () => {
                     </thead>
                     <tbody>
                         {TABLE_ROWS.map(
-                            ({ id, img, name, category, brand, variants, rating, ratingCount, inStock, createdOn, updatedOn }, index) => {
+                            ({ id, img, name, category, brand, mrp, sellingPrice, variants, rating, ratingCount, inStock, createdOn, updatedOn }, index) => {
                                 const isLast = index === TABLE_ROWS.length - 1;
                                 const classes = isLast
                                     ? "p-4"
@@ -192,7 +192,7 @@ const ProductList = () => {
                                     <tr key={id} className="even:bg-blue-gray-50/50">
                                         <td className={classes}>
                                             <div className="flex items-center gap-3">
-                                                <Avatar src={img} alt={name} size="sm" variant='square' />
+                                                <Avatar src={img} alt={name} size="sm" variant='square' className='object-scale-down object-center' />
                                                 <div className="flex flex-col">
                                                     <Typography
                                                         variant="small"
@@ -218,6 +218,24 @@ const ProductList = () => {
                                                 className="font-normal"
                                             >
                                                 {category}
+                                            </Typography>
+                                        </td>
+                                        <td className={classes}>
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal"
+                                            >
+                                                {formatPrice(mrp)}
+                                            </Typography>
+                                        </td>
+                                        <td className={classes}>
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal"
+                                            >
+                                                {formatPrice(sellingPrice)}
                                             </Typography>
                                         </td>
                                         <td className={classes}>

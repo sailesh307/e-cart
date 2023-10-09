@@ -1,22 +1,27 @@
 // src/state/reducers/cartReducer.js
 import { ADD_TO_CART, CART_FAILURE, CART_REQUEST, CHANGE_QUANTITY, INITIALIZE_CART, REMOVE_FROM_CART } from '../actions/cartActions';
 
-// const items = [
-//     {
-//         "productId": "650147a6395fe358871d0394",
-//         "variantId": "650147a6395fe358871d0395",
-//         "name": "iPhone 14 Pro(Space Black | 128 GB)",
-//         "price": 100999,
-//         "color": "Space Black",
-//         "quantity": 1,
-//         "image": "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/l/p/-original-imaghxemc3wtcuhb.jpeg?q=70",
-//         "_id": "650189ba29c4466bcd0dd368"
-//     }
-// ];
+/* 
+    const items = {
+        "_id": cartItemId
+        sellerId: product.sellerId,
+        category: product.category,
+        name: product.name,
+        brand: product.brand,
+        price: product.price,
+        stock: product.stock,
+        shippingFee: product.shippingFee,
+        images: product.images,
+        rating: product.rating,
+        ratingCount: product.ratingCount,
+        productId: product._id,
+    };
+*/
 
 const initialState = {
     items: null,
-    total: 0,
+    subTotal: 0,
+    shippingFee: 0,
     itemCount: 0,
     loading: false,
     error: null,
@@ -34,8 +39,9 @@ const cartReducer = (state = initialState, action) => {
             return {
                 ...state,
                 items: action.payload,
-                total: action.payload.reduce((total, item) => total + item.price * item.quantity, 0),
-                itemCount: action.payload.reduce((total, item) => total + item.quantity, 0),
+                subTotal: action.payload.reduce((subTotal, item) => subTotal + item.price.selling * item.quantity, 0),
+                shippingFee: action.payload.reduce((shippingFee, item) => shippingFee + item.shippingFee * item.quantity, 0),
+                itemCount: action.payload.reduce((subTotal, item) => subTotal + item.quantity, 0),
                 loading: false,
             };
         }
@@ -45,7 +51,8 @@ const cartReducer = (state = initialState, action) => {
             return {
                 ...state,
                 items: [...state.items, newItem],
-                total: state.total + newItem.price,
+                subTotal: state.subTotal + newItem.price.selling,
+                shippingFee: state.shippingFee + newItem.shippingFee,
                 itemCount: state.itemCount + 1,
                 loading: false,
             };
@@ -62,7 +69,8 @@ const cartReducer = (state = initialState, action) => {
                 return {
                     ...state,
                     items: updatedItems,
-                    total: state.total - itemToRemove.price * itemToRemove.quantity,
+                    subTotal: state.subTotal - itemToRemove.price.selling * itemToRemove.quantity,
+                    shippingFee: state.shippingFee - itemToRemove.shippingFee * itemToRemove.quantity,
                     itemCount: state.itemCount - itemToRemove.quantity,
                     loading: false,
                 };
@@ -79,7 +87,8 @@ const cartReducer = (state = initialState, action) => {
                 itemToChange.quantity = quantity;
                 return {
                     ...state,
-                    total: state.total + itemToChange.price * quantityDifference,
+                    subTotal: state.subTotal + itemToChange.price.selling * quantityDifference,
+                    shippingFee: state.shippingFee + itemToChange.shippingFee * quantityDifference,
                     itemCount: state.itemCount + quantityDifference,
                     loading: false,
                 };

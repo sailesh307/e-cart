@@ -9,26 +9,20 @@ const cartItemSchema = new mongoose.Schema({
     },
     variantId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product.variant.variantData',
-        required: true,
+        ref: 'Product.variant',
+        // required: true,
     },
-    name: {
-        type: String,
-        required: true,
-    },
-    price: {
-        type: Number,
-        default: 0,
-        required: true,
-    },
-    color: String,
     quantity: {
         type: Number,
         default: 1,
     },
-    image: {
-        type: String,
-        required: true,
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    modifiedAt: {
+        type: Date,
+        default: Date.now,
     },
 });
 
@@ -50,7 +44,7 @@ const cartSchema = new mongoose.Schema({
     },
 });
 
-cartSchema.pre('save', function (next) {
+cartSchema.pre('findOneAndUpdate', function (next) {
     this.modifiedAt = Date.now();
     next();
 });
