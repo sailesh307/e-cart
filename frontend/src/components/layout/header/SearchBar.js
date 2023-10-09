@@ -19,7 +19,6 @@ const SearchBar = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log(keyword);
     navigate(routeNames.SEARCH + '?q=' + keyword);
   };
 

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import routeNames from '../../../constants/routeNames'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUser } from '../../../state/actions/userActions'
@@ -8,17 +7,13 @@ import {
     Menu,
     MenuHandler,
     MenuList,
-    MenuItem,
-    Button,
-    Avatar,
+    MenuItem
 } from "@material-tailwind/react";
-
-const defaultUser = 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80'
+import { PersonOutline } from '@mui/icons-material'
 
 const DropDown = () => {
     const { token, user } = useSelector((state) => state.user);
     const firstName = user?.firstName;
-    const avatar = user?.avatar;
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -32,24 +27,21 @@ const DropDown = () => {
     return (
         <>
             {/* if not token */}
-            {!token && <div className="flex items-center justify-center">
-                <Link to={routeNames.SIGNIN} className="hover:text-gray-500 p-2">
-                    Sign In
+            {!token &&
+                <Link to={routeNames.SIGNIN} className="flex flex-row items-center">
+                    <span className='text-sm whitespace-nowrap'>Sign in</span>
+                    <PersonOutline className='scale-125'/>
                 </Link>
-            </div>}
+            }
             {token &&
                 <Menu>
                     <MenuHandler>
-                        <Avatar
-                            variant="circular"
-                            alt="U"
-                            size='lg'
-                            className="cursor-pointer p-1.5"
-                            src={avatar || defaultUser}
-                        />
+                        <button className="flex flex-row items-center">
+                            <span className='text-sm whitespace-nowrap'>{firstName}</span>
+                            <PersonOutline className='scale-125' />
+                        </button>
                     </MenuHandler>
                     <MenuList >
-                        <MenuItem>{firstName}</MenuItem>
                         <MenuItem>My Profile</MenuItem>
                         <MenuItem>Orders</MenuItem>
                         <MenuItem onClick={handleLogout}>

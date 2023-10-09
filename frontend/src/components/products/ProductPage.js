@@ -28,9 +28,13 @@ const ProductPage = () => {
         dispatch(fetchProducts(pageNo));
     }
 
+    if (products.length === 0) {
+        return <div>No products for <span className="font-bold">{searchQuery}</span></div>
+    }
+
     return (
         <div className="">
-            <div className="flex flex-col items-center overflow-hidden">
+            <div className="flex flex-col flex-1 overflow-hidden">
                 {/* show products */}
                 <div className="m-2 mt-4 flex flex-col">
                     {products.map((product) => {

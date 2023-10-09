@@ -72,11 +72,8 @@ export const fetchProducts = (page = 1) => {
         dispatch(fetchProductsRequest());
         try {
             const url = `${API_URLS.PRODUCTS}?${queryString}${sortOptionString}${pageString}`;
-            // const url = API_URLS.PRODUCTS + query;
-            console.log('url', url);
             const response = await Axios.get(url);
             dispatch(fetchProductsSuccess(response.data));
-            console.log('data', response.data);
         } catch (error) {
             console.log(error);
             dispatch(fetchProductsFailure(error.message));
@@ -91,10 +88,17 @@ export const fetchProductDetails = (productId) => {
         dispatch(productDetailRequest());
         try {
             const response = await Axios.get(API_URLS.FETCH_A_PRODUCT(productId)); // Replace with your API endpoint
-            console.log('data', response.data);
             dispatch(productDetailSuccess(response.data));
         } catch (error) {
-            dispatch(productDetailFailure(error.message));
+            if (error.response) {
+                dispatch(productDetailFailure(error.response.data.message));
+            }
+            else if (error.request) {
+                dispatch(productDetailFailure(error.request));
+            }
+            else {
+                dispatch(productDetailFailure(error.message));
+            }
         }
     };
 };

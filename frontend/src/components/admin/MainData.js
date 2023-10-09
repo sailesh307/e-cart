@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import Chart from 'chart.js/auto';
 import { Bar, Doughnut, Pie } from "react-chartjs-2";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';

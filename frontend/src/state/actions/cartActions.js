@@ -59,7 +59,6 @@ export const setCart = () => async (dispatch) => {
             },
         });
         const { items } = response.data;
-        console.log('fetched cart', items);
         dispatch(initializeCart(items));
     } catch (error) {
         console.log(error);

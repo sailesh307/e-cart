@@ -32,7 +32,7 @@ const PaginationComponent = ({ pageCount = 1, handler = () => { } }) => {
         const end = Math.min(pageCount, start + maxButtonCount - 1);
         for (let i = start; i <= end; i++) {
             buttons.push(
-                <IconButton clas key={i} {...getItemProps(i)}>
+                <IconButton key={i} {...getItemProps(i)}>
                     {i}
                 </IconButton>
             );
