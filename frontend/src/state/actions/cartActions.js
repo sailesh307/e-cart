@@ -67,15 +67,16 @@ export const setCart = () => async (dispatch) => {
     }
 }
 
-export const addProductToCart = (product) => async (dispatch) => {
+export const addProductToCart = (productId, variantId) => async (dispatch) => {
     if(!localStorage.getItem('token')) return;
     try {
         dispatch(requestCart());
-        await Axios.post(API_URLS.CART, product, {
+        const response = await Axios.post(API_URLS.CART, {productId, variantId}, {
             headers: {
                 'x-auth-token': localStorage.getItem('token'),
             },
         });
+        const product = response.data;
         dispatch(addToCart(product));
     } catch (error) {
         console.log(error);

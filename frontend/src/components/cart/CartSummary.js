@@ -8,9 +8,9 @@ import { Button, Card, Typography } from '@material-tailwind/react';
 const CartSummary = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart);
-    let { total, itemCount } = cart;
+    let { subTotal, shippingFee, itemCount } = cart;
     const navigate = useNavigate();
-    total = formatPrice(total);
+    subTotal = formatPrice(subTotal);
 
     const handleCheckout = (e) => {
         e.preventDefault();
@@ -22,8 +22,11 @@ const CartSummary = () => {
     return (
         <div>
             <Card className='static bottom-0 md:top-0 w-full p-4 m-2'>
+                <Typography variant='small'>
+                    Shipping Fee: {shippingFee}
+                </Typography>
                 <Typography variant='lead'>
-                    Subtotal: {total}
+                    Subtotal: {subTotal}
                 </Typography>
                 {/* Add "Order Now" button or any other checkout functionality */}
                 <Button

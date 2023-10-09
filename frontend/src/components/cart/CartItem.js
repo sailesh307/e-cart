@@ -7,8 +7,9 @@ import { enqueueSnackbar } from "notistack";
 import { Button, Card } from "@material-tailwind/react";
 
 const CartItem = ({ item }) => {
-    let { _id, productId, variantId, name, price, color, quantity, image, size } = item;
-    price = formatPrice(price);
+    let { _id, productId, variantId, name, price, color, quantity, image, size, stock } = item;
+    price = formatPrice(price.selling);
+
     const dispatch = useDispatch();
 
     const handleRemoveFromCart = () => {
@@ -46,7 +47,7 @@ const CartItem = ({ item }) => {
                         </h3>
                         <p className="ml-4"> {price}</p>
                     </div>
-                    <p className="mt-1 text-sm text-green-500">In stock</p>
+                    <p className={`mt-1 text-sm ${stock === 0 ? 'text-gray-700' : 'text-green-500'}`}>{stock === 0 ? 'Out of Stock': 'In stock'}</p>
                     <p className="mt-1 text-sm text-gray-700">Eligible for FREE shipping</p>
                     {/* If color */}
                     {color && <p className="mt-1 text-sm"><strong>Colour: </strong>{color}</p>}

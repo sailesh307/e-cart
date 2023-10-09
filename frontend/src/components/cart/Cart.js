@@ -4,12 +4,23 @@ import ShowCartItems from './ShowCartItems';
 import { useNavigate } from 'react-router-dom';
 import routeNames from '../../constants/routeNames';
 import { Button } from '@material-tailwind/react';
+import Loader from '../layout/loader/Loader'
+import Error from "../Error";
 
 export default function Cart() {
     // if there is no cart, show this message
     const cart = useSelector((state) => state.cart);
-    const { itemCount } = cart;
+    const { itemCount, loading, error } = cart;
     const navigate = useNavigate();
+
+
+    if (loading) {
+        return <Loader />
+    }
+    if (error) {
+        return <Error msg={error} />
+    }
+
     return (
         <>
             {
