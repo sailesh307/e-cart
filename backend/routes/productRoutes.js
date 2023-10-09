@@ -4,13 +4,16 @@ const productController = require('../controllers/ProductController');
 const sellerMiddleware = require('../middleware/sellerMiddleware');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Create a new product
+// @route  GET /api/products
+// @desc   Create a new product
 router.post('/', authMiddleware, sellerMiddleware, productController.createProduct);
 
-// Get all products
+// @route  GET /api/products
+// @desc   Get all products on search
 router.get('/', productController.searchProducts);
 
-// Get a single product by ID
+// @route  GET /api/products/id/:productId
+// @desc   Get a single product by ID
 router.get('/id/:productId', productController.getProductById);
 
 
@@ -19,10 +22,12 @@ router.get('/id/:productId', productController.getProductById);
 // @desc   Get all products of a seller
 router.get('/seller', authMiddleware, sellerMiddleware, productController.getProductsBySeller);
 
-// Update a product by ID
+// @route  PUT /api/products/id/:productId
+// @desc   Update a product by ID
 router.put('/id/:productId', productController.updateProductById);
 
-// Delete a product by ID
+// @route  DELETE /api/products/id/:productId
+// @desc   Delete a product by ID
 router.delete('/id/:productId', productController.deleteProductById);
 
 module.exports = router;
