@@ -11,7 +11,7 @@ const SearchBar = () => {
   const queryParams = new URLSearchParams(location.search);
   const searchQuery = queryParams.get('q');
 
-  const [keyword, setKeyword] = useState(searchQuery);
+  const [keyword, setKeyword] = useState(searchQuery ?? '');
 
   const handleChange = ({ target }) => {
     setKeyword(target.value);
