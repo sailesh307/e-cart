@@ -50,7 +50,7 @@ const Signup = () => {
     useEffect(() => {
         if (user) {
             enqueueSnackbar('Signup Successful', { variant: 'success' });
-            if (user.role !== 'admin') {
+            if (user.role === 'customer') {
                 navigate(routeNames.HOME);
             } else {
                 navigate(routeNames.ADMIN_DASHBOARD);

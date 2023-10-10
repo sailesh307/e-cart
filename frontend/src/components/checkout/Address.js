@@ -1,20 +1,15 @@
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
+import { Input, Button, Checkbox, Typography } from '@material-tailwind/react';
 import { useState } from 'react';
 
 const Address = ({ onSubmit, address, editing }) => {
     const [addressData, setAddressData] = useState(address);
-
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
         setAddressData({
             ...addressData,
             [name]: type === 'checkbox' ? checked : value
         });
-        console.log(name, value, type, checked);
+        // console.log(name, value, type, checked);
     }
 
     const handleFormSubmit = (event) => {
@@ -24,114 +19,91 @@ const Address = ({ onSubmit, address, editing }) => {
 
     return (
         <form onSubmit={handleFormSubmit} onChange={handleChange}>
-            <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
+            <div className='flex flex-col gap-4'>
+                <div className='flex flex-col sm:flex-row gap-4'>
+                    <Input
                         required
-                        id="firstName"
                         name="firstName"
                         label="First name"
-                        fullWidth
-                        variant="standard"
-                        value={addressData?.firstName ?? ''}
+                        defaultValue={addressData?.firstName ?? ''}
                     />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
+                    <Input
                         required
-                        id="lastName"
                         name="lastName"
                         label="Last name"
-                        fullWidth
-                        variant="standard"
-                        value={addressData?.lastName ?? ''}
+                        defaultValue={addressData?.lastName ?? ''}
                     />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
+                </div>
+
+                <Input
+                    required
+                    name="mobileNumber"
+                    label="Mobile Number"
+                    defaultValue={addressData?.mobileNumber ?? ''}
+                />
+                <Input
+                    required
+                    name="address"
+                    label="Address"
+                    defaultValue={addressData?.address ?? ''}
+                />
+                <div className='flex flex-col sm:flex-row gap-4'>
+                    <Input
                         required
-                        id="mobileNumber"
-                        name="mobileNumber"
-                        label="Mobile Number"
-                        fullWidth
-                        variant="standard"
-                        value={addressData?.mobileNumber ?? ''}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        required
-                        id="address"
-                        name="address"
-                        label="Address"
-                        fullWidth
-                        variant="standard"
-                        value={addressData?.address ?? ''}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        required
-                        id="city"
                         name="city"
                         label="City"
-                        fullWidth
-                        variant="standard"
-                        value={addressData?.city ?? ''}
+                        defaultValue={addressData?.city ?? ''}
                     />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
+                    <Input
                         required
-                        id="state"
                         name="state"
                         label="State"
-                        fullWidth
-                        variant="standard"
-                        value={addressData?.state ?? ''}
+                        defaultValue={addressData?.state ?? ''}
                     />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
+                </div>
+                <div className='flex flex-col sm:flex-row gap-4'>
+                    <Input
                         required
-                        id="pinCode"
                         name="pinCode"
                         label="Pin Code"
-                        fullWidth
-                        variant="standard"
-                        value={addressData?.pinCode ?? ''}
+                        defaultValue={addressData?.pinCode ?? ''}
                     />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
+                    <Input
                         required
-                        id="country"
                         name="country"
                         label="Country"
-                        fullWidth
-                        variant="standard"
-                        value={addressData?.country ?? ''}
+                        defaultValue={addressData?.country ?? ''}
                     />
-                </Grid>
-                <Grid item xs={12}>
-                    <FormControlLabel
-                        control={<Checkbox color="secondary" name="isDefault" value={addressData?.isDefault ?? false} />}
-                        label="Make this my default address"
-                    />
-                </Grid>
-            </Grid>
-            <Button variant="contained" color="primary" type="submit">
-                Save
-            </Button>
-            <Button variant="contained" color="secondary" type="button"
-                onClick={() => {
-                    editing(false);
-                } }
-            >
-                Cancel
-            </Button>
-        </form>
+                </div>
+                <Checkbox
+                    name="isDefault"
+                    defaultChecked={addressData?.isDefault === true}
+                    label={
+                        <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal"
+                        >
+                            Make this my default address
+                        </Typography>
+                    }
+                    containerProps={{ className: "-ml-2.5" }}
+                />
+            </div>
+            <div className='space-x-2'>
+                <Button type="submit">
+                    Save
+                </Button>
+                <Button type="button" variant='outlined'
+                    onClick={() => {
+                        editing(false);
+                    }}
+                >
+                    Cancel
+                </Button>
+            </div>
 
+        </form>
     )
 }
 

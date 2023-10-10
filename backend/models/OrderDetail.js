@@ -16,8 +16,8 @@ const orderDetailSchema = new mongoose.Schema({
     },
     variantId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product.variant.variantData',
-        required: true,
+        ref: 'Product.variant',
+        // required: true,
     },
     quantity: {
         type: Number,

@@ -13,7 +13,7 @@ exports.createOrder = async (req, res) => {
         // calculate total amount
         let totalAmount = 0;
         orderItems.forEach((item) => {
-            totalAmount += item.price * item.quantity;
+            totalAmount += item.price.selling * item.quantity;
         });
         
         // create order
@@ -31,7 +31,7 @@ exports.createOrder = async (req, res) => {
                 productId: item.productId,
                 variantId: item.variantId,
                 quantity: item.quantity,
-                price: item.price,
+                price: item.price.selling,
             });
             await orderDetail.save();
         });
