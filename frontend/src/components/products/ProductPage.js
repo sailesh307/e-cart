@@ -142,7 +142,10 @@ const ProductPage = () => {
 
                 {/* show pagination componant */}
 
+                <div className="flex justify-center">
                 <PaginationComponent pageCount={totalPages} handler={handlePageChange} />
+
+                </div>
 
             </div>
         </div>
