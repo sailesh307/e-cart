@@ -10,7 +10,7 @@ import { ShoppingCart } from '@mui/icons-material';
 const NavBar = () => {
     const { itemCount } = useSelector((state) => state.cart);
     return (
-        <div className="sticky top-0 z-50">
+        <div className="sticky top-0 z-40">
             <header className="w-full bg-primary text-primary-text">
                 <nav aria-label="Top" className="mx-auto p-1 px-2 md:px-8">
                     <div className="flex h-12 justify-between items-center">
