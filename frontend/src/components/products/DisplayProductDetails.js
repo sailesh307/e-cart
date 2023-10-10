@@ -19,7 +19,7 @@ const DisplayProductDetails = ({ data }) => {
 
     //////////////// Data extraction ////////////////////
     /////////extract non changeable attributes //////////
-    const { _id, name, about, highlights, details, rating, ratingCount, images, price } = data ?? {};
+    const { _id, name, about, highlights, rating, ratingCount, images, price } = data ?? {};
     const pid = _id;
     // const { allColors, allSizes, variantData } = data?.variant ?? {};
 
@@ -51,7 +51,7 @@ const DisplayProductDetails = ({ data }) => {
 
     const [isInCart, setIsInCart] = useState(false);
 
-    // useEffect(() => {
+    useEffect(() => {
     //     // make list of active colors for selected size
     //     const activeColors = [];
     //     variantData.forEach((variant) => {
@@ -85,8 +85,8 @@ const DisplayProductDetails = ({ data }) => {
     //             setCurrentImages(variant.images.length === 0 ? images : variant.images);
     //         }
     //     });
-    //     setIsInCart(products?.some((product) => product.productId === pid && product.variantId === selectedVariant));
-    // }, [images, pid, products, selectedColor, selectedSize, selectedVariant, variantData]);
+        setIsInCart(products?.some((product) => product.productId === pid));
+    }, [pid, products]);
 
 
     const handleColorChange = (color) => {
