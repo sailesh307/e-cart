@@ -29,6 +29,8 @@ exports.createOrder = async (req, res) => {
             const orderDetail = new OrderDetail({
                 orderId: newOrder._id,
                 productId: item.productId,
+                image: item.image,
+                name: item.name,
                 variantId: item.variantId,
                 quantity: item.quantity,
                 price: item.price.selling,
@@ -66,19 +68,28 @@ exports.getAllOrders = async (req, res) => {
 
         // if query is empty, fetch all orders
         if (Object.keys(query).length === 0) {
-            const orders = await Order.find({ userId });
-            res.json(orders);
+            const orders = await Order.find({ userId }).populate('shippingAddressId');
+
+            // Use Promise.all to handle multiple asynchronous operations
+            const ordersWithDetails = await Promise.all(orders.map(async (order) => {
+                const orderDetails = await OrderDetail.find({ orderId: order._id });
+                return { ...order.toObject(), orderDetails };
+            }));
+
+            res.json(ordersWithDetails);
         }
         // else fetch orders on basis of query
         else {
             const orders = await Order.find({ userId }).sort(query);
             res.json(orders);
         }
-        
+
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Failed to fetch orders' });
     }
 };
+
 
 // Get a single order by ID
 exports.getOrderById = async (req, res) => {

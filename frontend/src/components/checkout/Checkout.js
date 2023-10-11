@@ -4,7 +4,6 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import { Typography, Button } from '@material-tailwind/react';
-import Link from '@mui/material/Link';
 import AddressList from './AddressList';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
@@ -12,23 +11,10 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { placeOrder } from '../../state/actions/checkout';
 import Loader from '../layout/loader/Loader';
-
-function Copyright() {
-  return (
-    <Typography variant='small' className='text-center'>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        E-Cart
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { Link } from 'react-router-dom';
+import routeNames from '../../constants/routeNames';
 
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
-
-
 
 const Checkout = () => {
   const checkoutDetails = useSelector(state => state.checkout);
@@ -83,39 +69,42 @@ const Checkout = () => {
           </Stepper>
           {activeStep === steps.length ?
             isPlacingOrder ? <Loader /> : error ? <div>{error}</div> :
-            (
-            <>
-              <Typography variant="h5">
-                Thank you for your order.
-              </Typography>
-              <Typography variant="paragraph">
-                Your order number is <span className='font-bold'>#{orderNumber}</span>. We have emailed your order
-                confirmation, and will send you an update when your order has
-                shipped.
-              </Typography>
-            </>
-          ) : (
-            <>
-              {getStepContent(activeStep)}
-              <div className='flex justify-end gap-2 mt-2'>
-                {activeStep !== 0 && (
-                  <Button variant='gradient' onClick={handleBack} >
-                    Back
-                  </Button>
-                )}
+              (
+                <>
+                  <Typography variant="h5">
+                    Thank you for your order.
+                  </Typography>
+                  <Typography variant="paragraph">
+                    Your order number is <span className='font-bold'>#{orderNumber}</span>. We have emailed your order
+                    confirmation, and will send you an update when your order has
+                    shipped.
+                  </Typography>
+                  
+                  <Link to={routeNames.ORDERS} className='flex flex-row justify-end'>
+                    <Button variant='gradient'> View Orders</Button>
+                  </Link>
+                </>
+              ) : (
+              <>
+                {getStepContent(activeStep)}
+                <div className='flex justify-end gap-2 mt-2'>
+                  {activeStep !== 0 && (
+                    <Button variant='gradient' onClick={handleBack} >
+                      Back
+                    </Button>
+                  )}
 
-                <Button
-                  variant="gradient"
-                  onClick={(e) => handleNext(e)}
-                  value={activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                >
-                  {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                </Button>
-              </div>
-            </>
-          )}
+                  <Button
+                    variant="gradient"
+                    onClick={(e) => handleNext(e)}
+                    value={activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                  >
+                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                  </Button>
+                </div>
+              </>
+            )}
         </Paper>
-        <Copyright />
       </Container>
     </>
   );

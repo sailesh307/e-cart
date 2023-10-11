@@ -10,6 +10,7 @@ const routeNames = {
     // PRODUCT_OVERVIEW: '/product?pid=:pid&name=:name&vid=:vid',
     CHECKOUT: '/checkout',
     PAYMENT_PAGE: '/paymentpage',
+    ORDERS: '/orders',
 
     // admin 
     ADMIN_DASHBOARD: '/admin/dashboard',

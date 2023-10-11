@@ -23,6 +23,7 @@ import CreateProduct from "./components/admin/product/CreateProduct";
 import ProductList from "./components/admin/product/ProductList";
 import UpdateProduct from "./components/admin/product/UpdateProduct";
 import Footer from "./components/layout/footer/Footer";
+import OrderPage from "./components/orders/OrderPage";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -53,6 +54,8 @@ const App = () => {
             <Route exact path={routeNames.SEARCH} element={<Filters />} />
             <Route exact path={routeNames.CHECKOUT} element={<Checkout />} />
             <Route exact path={routeNames.ADMIN_UPDATE_PRODUCT(':pid')} element={<UpdateProduct />} />
+            <Route exact path={routeNames.ORDERS} element={<OrderPage />} />
+
 
             {/* admin */}
             {/* main data */}

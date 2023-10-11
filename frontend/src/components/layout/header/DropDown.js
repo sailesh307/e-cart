@@ -30,7 +30,7 @@ const DropDown = () => {
             {!token &&
                 <Link to={routeNames.SIGNIN} className="flex flex-row items-center">
                     <span className='text-sm whitespace-nowrap'>Sign in</span>
-                    <PersonOutline className='scale-125'/>
+                    <PersonOutline className='scale-125' />
                 </Link>
             }
             {token &&
@@ -43,7 +43,11 @@ const DropDown = () => {
                     </MenuHandler>
                     <MenuList >
                         <MenuItem>My Profile</MenuItem>
-                        <MenuItem>Orders</MenuItem>
+                        <MenuItem>
+                            <Link to={routeNames.ORDERS}>
+                                My Orders
+                            </Link>
+                        </MenuItem>
                         <MenuItem onClick={handleLogout}>
                             Logout
                         </MenuItem>
