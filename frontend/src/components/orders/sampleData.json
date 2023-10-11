@@ -1,0 +1,46 @@
+[
+    {
+        "_id": "65266081f544ace949da4d5c",
+        "userId": "64f425679115ac57f2d0bad8",
+        "totalAmount": 18098,
+        "orderStatus": "pending",
+        "shippingAddressId": {
+            "_id": "65254400f8f475c1302a269c",
+            "userId": "64f425679115ac57f2d0bad8",
+            "firstName": "Vision",
+            "lastName": "Pro",
+            "address": "India",
+            "city": "Asia",
+            "state": "Earth",
+            "country": "Universe",
+            "pinCode": "201201",
+            "mobileNumber": "9876543210",
+            "isDefault": true,
+            "__v": 0
+        },
+        "orderDate": "2023-10-11T08:44:49.188Z",
+        "__v": 0,
+        "orderDetails": [
+            {
+                "_id": "65266081f544ace949da4d5e",
+                "orderId": "65266081f544ace949da4d5c",
+                "productId": "6522c71c28cfa498362761e0",
+                "name": "REDMI Note 10 Pro",
+                "image": "https://rukminim2.flixcart.com/image/416/416/kmgn0cw0/mobile/i/q/y/note-10-pro-1153-redmi-original-imagfdfxkvjsf9ga.jpeg?q=70",
+                "quantity": 1,
+                "price": 16999,
+                "__v": 0
+            },
+            {
+                "_id": "65266081f544ace949da4d5f",
+                "orderId": "65266081f544ace949da4d5c",
+                "productId": "65219174509e4b0f8a47138d",
+                "name": "Smart Watch",
+                "image": "https://rukminim2.flixcart.com/image/416/416/xif0q/smartwatch/r/x/t/-original-imagkqttz6exyzgy.jpeg?q=70",
+                "quantity": 1,
+                "price": 1099,
+                "__v": 0
+            }
+        ]
+    }
+]

@@ -19,6 +19,14 @@ const orderDetailSchema = new mongoose.Schema({
         ref: 'Product.variant',
         // required: true,
     },
+    name: {
+        type: String,
+        required: true,
+    },
+    image: {
+        type: String,
+        required: true,
+    },
     quantity: {
         type: Number,
         default: 1,
