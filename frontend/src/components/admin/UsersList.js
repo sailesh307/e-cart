@@ -7,6 +7,7 @@ import {
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from 'react-redux';
 import { AdminGetUsers } from '../../state/actions/userActions';
+import { Avatar } from '@mui/material';
 import {
     Card,
     CardHeader,
@@ -19,7 +20,6 @@ import {
     Tabs,
     TabsHeader,
     Tab,
-    Avatar,
     IconButton,
     Tooltip,
 } from "@material-tailwind/react";
@@ -63,7 +63,7 @@ const UsersList = () => {
             // capatalize first letter of job 
             role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
 
-            img: user.avatar?.url ?? 'https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg',
+            avatar: user?.firstName?.charAt(0) + (user?.lastName?.charAt(0) ?? ''),
             // asign online randomly
             online: Math.random() > 0.5,
             // date in dd/mm/yyyy and time in hh:mm with local time zone
@@ -139,7 +139,7 @@ const UsersList = () => {
                     </thead>
                     <tbody>
                         {TABLE_ROWS.map(
-                            ({id, img, name, email, role, online, date }, index) => {
+                            ({id, avatar, name, email, role, online, date }, index) => {
                                 const isLast = index === TABLE_ROWS.length - 1;
                                 const classes = isLast
                                     ? "p-4"
@@ -149,7 +149,7 @@ const UsersList = () => {
                                     <tr key={id} className="even:bg-blue-gray-50/50">
                                         <td className={classes}>
                                             <div className="flex items-center gap-3">
-                                                <Avatar src={img} alt={name} size="sm" />
+                                                <Avatar>{avatar}</Avatar>
                                                 <div className="flex flex-col">
                                                     <Typography
                                                         variant="small"
