@@ -7,12 +7,12 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import CloseIcon from '@mui/icons-material/Close';
-import Avatar from '@mui/material/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { logoutUser } from '../../state/actions/userActions';
 import routeNames from '../../constants/routeNames';
 import { useSnackbar } from 'notistack';
+import NameAvatar from '../NameAvatar';
 
 const navMenu = [
     {
@@ -68,10 +68,7 @@ const AdminSideBar = ({ activeTab, setSidebarOpen }) => {
     return (
         <aside className="sidebar z-50 min-h-screen fixed left-0 pb-14 max-h-screen bg-gray-800 text-white overflow-x-hidden border-r">
             <div className="flex items-center gap-3 bg-gray-700 p-2 rounded-lg shadow-lg my-4 mx-3.5">
-                <Avatar
-                    alt="Avatar"
-                    src={user?.avatar?.url ?? 'https://assets.leetcode.com/users/avatars/avatar_1662869949.png' }
-                />
+                <NameAvatar firstName={user?.firstName} lastName={user?.lastName} />
                 <div className="flex flex-col gap-0">
                     <span className="font-medium text-lg">{user?.firstName}</span>
                     <span className="text-gray-300 text-sm">{user?.email}</span>

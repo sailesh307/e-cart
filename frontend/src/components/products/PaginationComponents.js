@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Button, IconButton } from "@material-tailwind/react";
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 
-const PaginationComponent = ({ pageCount = 1, handler = () => { } }) => {
-    const [active, setActive] = useState(1);
+const PaginationComponent = ({ activePage = 1, pageCount = 1, handler = () => { } }) => {
+    const [active, setActive] = useState(activePage);
     const getItemProps = (index) => ({
         variant: active === index ? "filled" : "text",
         color: "gray",
