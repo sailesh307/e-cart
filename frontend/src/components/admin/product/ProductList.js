@@ -24,7 +24,7 @@ import {
     Tooltip,
 } from "@material-tailwind/react";
 import { fetchSellerProducts } from '../../../state/actions/productActions';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import routeNames from '../../../constants/routeNames';
 import { formatPrice, formatRatingCount } from '../../../utils/formating';
 import Loader from '../../layout/loader/Loader';
@@ -131,9 +131,11 @@ const ProductList = () => {
                         </Typography>
                     </div>
                     <div>
-                        <Button size="sm">
-                            {"+  "}Add Product
-                        </Button>
+                        <Link to={routeNames.ADMIN_NEW_PRODUCT}>
+                            <Button size="sm">
+                                {"+  "}Add Product
+                            </Button>
+                        </Link>
                     </div>
                 </div>
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row">

@@ -1,40 +1,65 @@
-import { Backdrop, Card, CircularProgress, IconButton, ListItem, TextField } from '@mui/material'
+import { Backdrop, CircularProgress, IconButton, InputAdornment, ListItem, TextField } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import React, { useState } from 'react'
+import { Card, CardHeader, CardBody, Typography, Button } from '@material-tailwind/react';
 
 /* const data = {
-    sellerId: ObjectId,
-    name: String,
-    category: String,
-    brand: String,
-    description: String,
-    
-    details: [String],
-    highlights: [String],
-
-    commonImages: [String],
-    variant: {
-        allColors: [String],
-        allSizes: [String],
-        variantData: [{
-            color: String,
-            size: String,
-            price: Number,
-            images: [String],
-        }],
+    "_id": "6522c71c28cfa498362761e0",
+    "sellerId": "64f47230eb36c0ba94bdf171",
+    "keywords": [
+        "redmi",
+        "mi",
+        "note 10"
+    ],
+    "category": "phone",
+    "name": "REDMI Note 10 Pro",
+    "brand": "Redmi",
+    "price": {
+        "mrp": 19999,
+        "selling": 16999,
+        "_id": "6522c71c28cfa498362761e1"
     },
-
-}; */
-
-const ProductForm = ({ onSubmit, initialValues, headerText , loading}) => {
+    "stock": 2,
+    "highlights": [
+        "6GB RAM, 128GB Storage",
+        "64MP with 5MP Super Tele-Macro",
+        "120Hz Super Amoled Display"
+    ],
+    "about": [
+        "Renewed product is tested to work and look like new with minimal to no signs of wear & tear",
+        "Product comes with relevant accessories",
+        "Backed by a minimum six-month seller warranty",
+        "Box may be generic",
+        "Processor: Qualcomm Snapdragon 732G with Kryo 470 Octa-core; 8nm process; Up to 2.3GHz clock speed",
+        "Camera: 64 MP Quad Rear camera with 8MP Ultra-wide, 5MP Telemacro, and Portrait lens| 16 MP Front camera",
+        "Display: 120Hz high refresh rate FHD+ (1080x2400) AMOLED Dot display; 16.9 centimeters (6.67 inch); 20:9 aspect ratio; HDR 10 support",
+        "Battery: 5020 mAH large battery with 33W fast charger in-box and Type-C connectivity"
+    ],
+    "shippingFee": 50,
+    "images": [
+        "https://rukminim2.flixcart.com/image/416/416/kmgn0cw0/mobile/i/q/y/note-10-pro-1153-redmi-original-imagfdfxkvjsf9ga.jpeg?q=70",
+        "https://rukminim2.flixcart.com/image/416/416/l1whaq80/mobile/n/f/p/-original-imagdd5efbyfnhzf.jpeg?q=70"
+    ],
+    "variant": [],
+    "rating": 2.5,
+    "ratingCount": 430156,
+    "createdAt": "2023-10-08T15:13:32.197Z",
+    "__v": 0
+};
+ */
+const ProductForm = ({ onSubmit, initialValues, headerText, loading }) => {
 
     const [category, setCategory] = useState(initialValues?.category || '')
     const [name, setName] = useState(initialValues?.name || '')
-    const [description, setDescription] = useState(initialValues?.description || '')
     const [brand, setBrand] = useState(initialValues?.brand || '')
-    const [details, setDetails] = useState(initialValues?.details?.join('\n') || '')
+    const [keywords, setKeywords] = useState(initialValues?.keywords?.join(',') || '')
+    const [about, setAbout] = useState(initialValues?.about?.join('\n') || '')
     const [highlights, setHighlights] = useState(initialValues?.highlights?.join('\n') || '')
-    const [commonImages, setCommonImages] = useState(initialValues?.commonImages?.join('\n') || '')
+    const [images, setImages] = useState(initialValues?.images?.join('\n') || '')
+    const [price, setPrice] = useState(initialValues?.price || { mrp: '', selling: '' })
+    const [stock, setStock] = useState(initialValues?.stock || '')
+    const [shippingFee, setShippingFee] = useState(initialValues?.shippingFee || '')
+
     const [variantData, setVariantData] = useState(
         initialValues?.variant?.variantData?.map((elem) => {
             return {
@@ -43,7 +68,7 @@ const ProductForm = ({ onSubmit, initialValues, headerText , loading}) => {
                 price: elem.price,
                 images: elem.images.join('\n'),
             }
-        }) ?? [{ color: '', size: '', price: '', images: '' }]
+        }) ?? []
     );
 
     ////////////////// handlers /////////////////////
@@ -55,17 +80,20 @@ const ProductForm = ({ onSubmit, initialValues, headerText , loading}) => {
         })
     }
 
-
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-        const productData = {
+    const getFormatedProductData = () => {
+        return {
             name,
             category,
             brand,
-            description,
-            details: details.split('\n'),
-            highlights: highlights.split('\n'),
-            commonImages: commonImages.split('\n'),
+            keywords: keywords.split(',').map((x) => x.trim()), // array of words
+            about: about.split('\n').map((x) => x.trim()), // array of points
+            highlights: highlights.split('\n').map((X) => X.trim()), // array of points
+            images: images.split('\n').map((x) => x.trim()), // array of images
+            price: { mrp: price.mrp, selling: price.selling },
+            stock,
+            shippingFee,
+
+
             variant: {
                 allColors: [...new Set(variantData.map((elem) => elem.color).filter((elem) => elem.length > 0))],
                 allSizes: [...new Set(variantData.map((elem) => elem.size).filter((elem) => elem.length > 0))],
@@ -78,7 +106,12 @@ const ProductForm = ({ onSubmit, initialValues, headerText , loading}) => {
                     }
                 })
             }
-        }
+        };
+    }
+
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        const productData = getFormatedProductData();
         console.log(productData)
         onSubmit(productData);
     }
@@ -160,26 +193,27 @@ const ProductForm = ({ onSubmit, initialValues, headerText , loading}) => {
                         </Backdrop>
                     </div>)
                     :
-                    <form onSubmit={handleFormSubmit} className=' rounded bg-gray-800'>
+                    <form onSubmit={handleFormSubmit} className=' rounded '>
                         {/* <!-- Heading> */}
-                        <div className=' flex justify-between items-center my-2 mb-6'>
-                            <h1 className=' text-2xl font-medium'>{headerText}</h1>
-                            <button
+                        <CardHeader className='flex justify-between items-center p-3 my-2 mb-3 '>
+                            <Typography className='text-2xl font-medium'>{headerText}</Typography>
+                            <Button
                                 type='submit'
-                                className={' bg-primary text-black py-2 px-10 font-bold rounded-sm hover:bg-blue-600'}>
+                                ripple={true}
+                                className='hover:opacity-95'
+                            >
                                 Publish
-                            </button>
-                        </div>
+                            </Button>
+                        </CardHeader>
                         {/* <!-- Heading> */}
 
-                        <div className='flex w-full gap-4 flex-col lg:flex-row'>
-
+                        <CardBody className='flex w-full gap-4 flex-col lg:flex-row'>
                             {/* <!-- Left Container> */}
-                            <div className=' flex flex-col lg:w-1/2 gap-4'>
+                            <Card className=' flex flex-col lg:w-1/2 gap-4'>
 
                                 {/* general info ( name , category , brand, short description) */}
-                                <div className=' bg-white p-6 flex w-full shadow rounded flex-col gap-5'>
-                                    <h1 className=' text-xl font-medium'>1. General Info</h1>
+                                <Card className=' bg-white p-3 md:p-6 flex w-full shadow rounded flex-col gap-5'>
+                                    <Typography className=' text-xl font-medium'>1. General Info</Typography>
                                     <TextField
                                         required
                                         label="Product Name"
@@ -208,20 +242,86 @@ const ProductForm = ({ onSubmit, initialValues, headerText , loading}) => {
                                             onChange={(e) => setBrand(e.target.value)}
                                         />
                                     </div>
+                                    <div className='flex items-center gap-5'>
+                                        <TextField
+                                            required
+                                            label="Mrp"
+                                            name='mrp'
+                                            value={price.mrp}
+                                            fullWidth
+                                            type='number'
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+                                            }}
+                                            onChange={(e) => setPrice({ ...price, mrp: e.target.value })}
+                                            size='small'
+                                        />
+                                        <TextField
+                                            required
+                                            label="Your Price"
+                                            size='small'
+                                            value={price.selling}
+                                            fullWidth
+                                            type='number'
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+                                            }}
+                                            onChange={(e) => setPrice({ ...price, selling: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className='flex items-center gap-5'>
+                                        <TextField
+                                            required
+                                            label="Shipping Fee"
+                                            size='small'
+                                            value={shippingFee}
+                                            fullWidth
+                                            type='number'
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+                                            }}
+                                            onChange={(e) => setShippingFee(e.target.value)}
+                                        />
+                                        <TextField
+                                            required
+                                            label="Stock"
+                                            name='stock'
+                                            value={stock}
+                                            fullWidth
+                                            type='number'
+                                            onChange={(e) => setStock(e.target.value)}
+                                            size='small'
+                                        />
+                                    </div>
+                                    <Typography className='text-xs'>Seprates keywords by comma(,)</Typography>
                                     <TextField
-                                        rows={5}
+                                        rows={2}
                                         multiline
-                                        label='Short Description'
+                                        label='Keywords'
                                         size={'small'}
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
+                                        value={keywords}
+                                        onChange={(e) => setKeywords(e.target.value)}
                                     />
-                                </div>
+                                </Card>
                                 {/* general info */}
 
                                 {/* Detailed Info (Highlights, Details) */}
-                                <div className=' bg-white p-6 flex w-full shadow rounded flex-col gap-5'>
+                                <div className=' bg-white p-3 md:p-6 flex w-full shadow rounded flex-col gap-5'>
                                     <h1 className=' text-xl font-medium'>2. Detailed Info</h1>
+                                    <div className='space-y-2'>
+                                        <Typography className='text-xs mb-0 pb-0'>Seprate each point by a new line</Typography>
+                                        <TextField
+                                            size='small'
+                                            label='About....'
+                                            name='about'
+                                            value={about}
+                                            multiline
+                                            rows={5}
+                                            onChange={(e) => setAbout(e.target.value)}
+                                            fullWidth
+                                        />
+                                    </div>
+
                                     <TextField
                                         size='small'
                                         label='Highlights....'
@@ -232,39 +332,32 @@ const ProductForm = ({ onSubmit, initialValues, headerText , loading}) => {
                                         onChange={(e) => setHighlights(e.target.value)}
                                         fullWidth
                                     />
-                                    <TextField
-                                        size='small'
-                                        label='Details....'
-                                        name='details'
-                                        value={details}
-                                        multiline
-                                        rows={5}
-                                        onChange={(e) => setDetails(e.target.value)}
-                                        fullWidth
-                                    />
+
                                 </div>
 
-                            </div>
+                            </Card>
                             {/* <!-- Left Container> */}
 
 
 
                             {/* <!-- Right Containiner> */}
-                            <div className=' lg:w-1/2 flex flex-col gap-6  rounded p-4'>
+                            <Card className=' lg:w-1/2  p-3 md:p-6 flex flex-col gap-6  rounded'>
                                 {/* visual data */}
                                 <h1 className=' text-xl font-medium '>3. Visual Data</h1>
-                                <div className='bg-white p-6 w-full rounded  gap-4'>
+                                <div className='space-y-2'>
+                                    <Typography className='text-xs mb-0 pb-0'>Seprate each url by a new line</Typography>
                                     <TextField
                                         required
                                         rows={5}
                                         multiline
-                                        label='Common Images'
+                                        label='Images'
                                         size={'small'}
-                                        value={commonImages}
+                                        value={images}
                                         fullWidth
-                                        onChange={(e) => setCommonImages(e.target.value)}
+                                        onChange={(e) => setImages(e.target.value)}
                                     />
                                 </div>
+
                                 {/*  */}
 
                                 <h1 className=' text-xl font-medium text-center'>Variants</h1>
@@ -295,8 +388,7 @@ const ProductForm = ({ onSubmit, initialValues, headerText , loading}) => {
                                         }
                                     </div>
                                     {/* add varient button */}
-                                    <button
-                                        type='button'
+                                    <Button
                                         onClick={() => {
                                             setVariantData((prev) => [...prev, {
                                                 color: '',
@@ -305,17 +397,17 @@ const ProductForm = ({ onSubmit, initialValues, headerText , loading}) => {
                                                 images: '',
                                             }])
                                         }}
-                                        className='bg-blue-500 text-black py-2 px-10 font-bold rounded-sm hover:bg-blue-600'
+                                        className='py-2 rounded-sm '
                                     >
                                         Add Variant
-                                    </button>
+                                    </Button>
                                 </div>
 
-                            </div>
+                            </Card>
                             {/* <!-- Right Containiner> */}
 
 
-                        </div>
+                        </CardBody>
 
                     </form>
 
