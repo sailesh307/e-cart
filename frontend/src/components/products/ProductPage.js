@@ -10,7 +10,7 @@ import { Card, CardBody, CardHeader, Chip, Rating, Typography } from "@material-
 import PaginationComponent from "./PaginationComponents";
 
 const ProductPage = () => {
-    const { products = [], loading, error, totalPages } = useSelector((state) => state.allProducts);
+    const { products = [], loading, error, totalPages, currentPage } = useSelector((state) => state.allProducts);
     const dispatch = useDispatch();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -143,7 +143,7 @@ const ProductPage = () => {
                 {/* show pagination componant */}
 
                 <div className="flex justify-center">
-                <PaginationComponent pageCount={totalPages} handler={handlePageChange} />
+                <PaginationComponent activePage={currentPage} pageCount={totalPages} handler={handlePageChange} />
 
                 </div>
 
