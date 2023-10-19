@@ -9,6 +9,7 @@ const sellerMiddleware = async (req, res, next) => {
         // check the user role
         const user = await User.findOne({ _id: userId });
         if (user.role === 'seller' || user.role === 'admin') {
+            req.user.role = user.role;
             next();
         } else {
             return res.status(401).json({ message: 'Authorization denied. User is not an seller.' });
