@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
     MagnifyingGlassIcon,
@@ -45,6 +45,7 @@ const UsersList = () => {
 
     const { loading, users } = useSelector(state => state.allUsers)
     const dispatch = useDispatch();
+    const [activeTab, setActiveTab] = useState("all");
 
     const handleEdit = (id) => () => {
         // TODO: handle edit user
@@ -55,7 +56,11 @@ const UsersList = () => {
         // TODO: search feature
     }
 
-    const TABLE_ROWS = users?.map((user) => {
+    const filteredUsers = activeTab === "all"
+        ? users
+        : users?.filter((user) => user.role === activeTab);
+
+    const TABLE_ROWS = filteredUsers?.map((user) => {
         return {
             id: user._id,
             name: user.firstName + ' ' + (user.lastName ?? ''),
@@ -97,7 +102,7 @@ const UsersList = () => {
                     </div>
                 </div>
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                    <Tabs value="all" className="w-full md:w-max">
+                    <Tabs value={activeTab} onChange={(value) => setActiveTab(value)} className="w-full md:w-max">
                         <TabsHeader>
                             {TABS.map(({ label, value }) => (
                                 <Tab key={value} value={value}>
@@ -139,7 +144,7 @@ const UsersList = () => {
                     </thead>
                     <tbody>
                         {TABLE_ROWS.map(
-                            ({id, avatar, name, email, role, online, date }, index) => {
+                            ({ id, avatar, name, email, role, online, date }, index) => {
                                 const isLast = index === TABLE_ROWS.length - 1;
                                 const classes = isLast
                                     ? "p-4"
